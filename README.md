@@ -256,7 +256,7 @@ $ ./hd-wallet-addrs.php
 
 # Installation and Running.
 
-PHP's gmp and mcrypte extensions are required.  Here's how to install on ubuntu.
+PHP's gmp and mcrypt extensions are required.  Here's how to install on ubuntu.
 ```
  sudo apt-get install php5-gmp php5-mcrypt
 ```
