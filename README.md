@@ -360,6 +360,11 @@ as of 2015-12-30:
 * does not provide a suitable API for querying address total_received
 * does not have a public address index.  Implementing an API would be difficult.
 
+# Thanks
+
+A big thank-you to the author of bitwasp/bitcoin-php.  This library does the
+heavy lifting of dealing with deterministic keys and multisig, amongst other
+things.
 
 # Todos
 
