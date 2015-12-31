@@ -256,11 +256,27 @@ $ ./hd-wallet-addrs.php
 
 # Installation and Running.
 
+PHP's gmp and mcrypte extensions are required.  Here's how to install on ubuntu.
+```
+ sudo apt-get install php5-gmp php5-mcrypt
+```
+
 Basics
 ```
  git clone https://github.com/dan-da/hd-wallet-addrs
  cd hd-wallet-addrs
- composer install
+ php -r "readfile('https://getcomposer.org/installer');" | php
+ php composer.phar install
+```
+
+Try an example
+```
+./hd-wallet-addrs.php -g --xpub=xpub6BfKpqjTwvH21wJGWEfxLppb8sU7C6FJge2kWb9315oP4ZVqCXG29cdUtkyu7YQhHyfA5nt63nzcNZHYmqXYHDxYo8mm1Xq1dAC7YtodwUR
+```
+
+Or to hide log messages
+```
+./hd-wallet-addrs.php -g --xpub=xpub6BfKpqjTwvH21wJGWEfxLppb8sU7C6FJge2kWb9315oP4ZVqCXG29cdUtkyu7YQhHyfA5nt63nzcNZHYmqXYHDxYo8mm1Xq1dAC7YtodwUR --logfile=/tmp/log.txt
 ```
 
 Run Test cases
