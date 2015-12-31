@@ -180,11 +180,11 @@ class walletaddrs {
                                               'xpub' => $xpub,
                                               'index' => $i );
                 }
-//print_r($batch);
+
                 mylogger()->log( sprintf( "Querying addresses %s to %s...", $start, $end), mylogger::info );
         
                 $response = $api->get_addresses_info( array_keys($batch), $params );
-//print_r( $response );
+
 
                 foreach( $response as $r ) {
                     if( $r['total_received'] == 0 ) {
@@ -211,8 +211,6 @@ class walletaddrs {
                 $batchnum ++;
             }
         }
-//print_r($alladdrs);
-//print_r($addrs);  exit;                    
 
         // if wallet is empty and $include_unused then we include addrs up to gap limit.
         if( !count($addrs) && $include_unused ) {
@@ -440,8 +438,13 @@ class walletaddrsreport {
         $counts = self::result_count_by_type( $results );
 
         fwrite( $fh, " --- Wallet Discovery Report --- \n\n" );
-        fprintf( $fh, "Found %s used Receive addresses and %s used Change addresses.\n\n",
-                      $counts['num_receive'], $counts['num_change'] );
+        fprintf($fh, "Found %s Receive addresses and %s Change addresses.\n" .
+                     "  Receive --  Used: %s\tUnused: %s\n" .
+                     "  Change  --  Used: %s\tUnused: %s\n\n",
+                     $counts['num_receive'], $counts['num_change'],
+                     $counts['num_receive_used'], $counts['num_receive_unused'],
+                     $counts['num_change_used'], $counts['num_change_unused']
+                );
         
         $buf = mysqlutil::format_results_fixed_width( $results );
         fwrite( $fh, $buf );
@@ -456,8 +459,13 @@ class walletaddrsreport {
         $counts = self::result_count_by_type( $results );
     
         fwrite( $fh, " --- Wallet Discovery Report --- \n\n" );
-        fprintf( $fh, "Found %s used Receive addresses and %s used Change addresses.\n\n",
-                      $counts['num_receive'], $counts['num_change'] );
+        fprintf($fh, "Found %s Receive addresses and %s Change addresses.\n" .
+                     "  Receive --  Used: %s\tUnused: %s\n" .
+                     "  Change  --  Used: %s\tUnused: %s\n\n",
+                     $counts['num_receive'], $counts['num_change'],
+                     $counts['num_receive_used'], $counts['num_receive_unused'],
+                     $counts['num_change_used'], $counts['num_change_unused']
+                );
         
         foreach( $results as $info ) {
             fprintf( $fh, "%s\n", $info['addr'] );
@@ -469,15 +477,30 @@ class walletaddrsreport {
     /* returns count of results by address type
      */
     static public function result_count_by_type($results) {
-        $num_receive = $num_change = 0;
+        $num_receive = $num_change = $num_receive_used = $num_change_used = 0;
         foreach( $results as $r) {
             switch( strtolower($r['type']) ) {
-                case 'receive': $num_receive ++; break;
-                case 'change': $num_change ++; break;
+                case 'receive':
+                    $num_receive ++;
+                    if( $r['total_received'] > 0 ) {
+                        $num_receive_used ++;
+                    }
+                    break;
+                case 'change':
+                    $num_change ++;
+                    if( $r['total_received'] > 0 ) {
+                        $num_change_used ++;
+                    }
+                    break;
                 default: throw new Exception("Invalid address type: " . $r['type'] );
             }
         }
         return ['num_receive' => $num_receive,
-                'num_change'  => $num_change];
+                'num_change'  => $num_change,
+                'num_receive_used' => $num_receive_used,
+                'num_change_used' => $num_change_used,
+                'num_receive_unused' => $num_receive - $num_receive_used,
+                'num_change_unused' => $num_change - $num_change_used,
+                ];
     }
 }
