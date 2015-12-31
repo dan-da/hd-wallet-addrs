@@ -170,17 +170,32 @@ Found 2 used Receive addresses and 2 used Change addresses.
 
 # How discovery works
 
-todo: more explanation.
+In plain english, discovery works by mathematically deriving the addresses
+for your wallet in order and checking if each one has been used or not.
 
-Unfortunately, neither bitcoind nor btcd provide an API for obtaining summary
-information about arbitrary addresses.
+A slightly more technical description of the process:
+* starting from the extended public key (xpub)
+* for receive addresses, then change addresses
+** derive batches of xpub child addresses (bip32: 0/*)
+** for each batch
+*** check if each address has received funds  (API call to oracle/server)
+*** until 20 (default) unused addresses in a row are found.
 
-At present, the supported blockchain APIs are:
-* blockchain.info: preferred, as it supports multi-address lookup.
-* toshi:  online service at toshi.io, or run locally.
-* insight: online service at insight.bitpay.com, or run locally.
+# Privacy implications
 
-Any public address or set of addresses may be reported on.
+An important thing to recognize is that unless you are running a toshi or
+insight server locally, the discovery process will send your public address
+to a third party.  ie: BlockChain.info, BitPay (insight), or CoinBase (toshi)
+
+The third party will have no way to spend your funds.
+
+The third party could track your requests and guess/assume that your addresses
+are associated with your IP, or are associated with eachother.
+
+If that is something you care about, then you should investigate how to run
+toshi or insight locally and use the --toshi or --insight flags to specify
+the local server URL.
+
 
 # Use at your own risk.
 
