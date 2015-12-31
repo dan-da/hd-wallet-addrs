@@ -81,7 +81,7 @@ function process_cli_params( $params ) {
 
     $xpublist = get_xpub_list( $params, $empty_ok = true );
     
-    $params['derivation'] = @$params['derivation'] ?: 'bip44';
+    $params['derivation'] = @$params['derivation'] ?: 'relative';
     $params['include-unused'] = isset($params['include-unused']) ? true : false;
     
     $params['multisig'] = count($xpublist) > 1;
