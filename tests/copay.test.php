@@ -3,7 +3,31 @@
 class copay extends test_base {
 
     public function runtests() {
+        $this->test1of1();
         $this->test2of3();
+    }
+
+    public function test1of1() {
+        // from copay 1.6.3.  Bip 44.  1 of 1, p2pbk.  ( addresses start with 1 )
+        $xpub = 'xpub6DRYJtFQz8tn96eYRpiXSNU6RXxSXJfKPqBEx2BgcQAo8Nd7f8awszFccEosLeFAxBdUc18uCJ3rmkAVFoPrz4EYJreoyYrDyqsRm1oNBrX';
+        $args = "-g --gap-limit=2  --xpub=$xpub --include-unused";
+
+        $data = hdwalletaddrscmd::runjson( $args );
+
+        $col = 'Number of addresses found.';
+        $this->eq( count($data), 4, $col );   // 2 empty receive + 2 empty change
+
+        $col = 'First Receive Address';
+        $this->eq( @$data[0]['addr'], '18YN94BXLGriw9UDDJrYMjfvUXS92x3Da1', $col );
+
+        $col = 'Second Receive Address';
+        $this->eq( @$data[1]['addr'], '15qHhha3zhz61gfAAJDL6vSqsr8ZcFv8aA', $col );
+
+        $col = 'First Change Address';
+        $this->eq( @$data[2]['addr'], '1KjNauo2LAWXG5iS8cqdDmGcCFt8QqpEh5', $col );
+
+        $col = 'Second Change Address';
+        $this->eq( @$data[3]['addr'], '186VLsD7EPVCwCtiJZ45FzFBZ3unigHC9S', $col );
     }
     
     protected function test2of3() {
