@@ -1,0 +1,338 @@
+# hd-wallet-addrs
+
+A command-line tool that performs Bitcoin wallet address discovery.
+
+Both regular HD wallets (single address) and multi-sig wallets (eg Copay) are
+supported.
+
+Reports are available in json, plaintext, and html.  Columns can be
+changed or re-ordered via command-line.
+
+hd-wallet-addrs is general purpose for anyone needing to discover which addresses
+are actually used in their wallet.
+
+The motivation for building this tool was to simplify extracting used wallet
+addresses for accounting purposes.  In particular for use with:
+* <a href="http://github.com/dan-da/bitprices">bitprices</a> - a command line utility for wallet pricing history and cost-based accounting.
+* <a href="http://mybitprices.info">mybitprices.info</a> - an easy-to-use web frontend to bitprices.
+
+
+# Let's see some examples.
+
+```
+./hd-wallet-addrs.php -g --xpub=xpub6BfKpqjTwvH21wJGWEfxLppb8sU7C6FJge2kWb9315oP4ZVqCXG29cdUtkyu7YQhHyfA5nt63nzcNZHYmqXYHDxYo8mm1Xq1dAC7YtodwUR --logfile=/tmp/log.txt
+
+ --- Wallet Discovery Report --- 
+
+Found 3 used Receive addresses and 2 used Change addresses.
+
++------------------------------------+---------+----------------+------------+------------+---------+
+| addr                               | type    | total_received | total_sent | balance    | relpath |
++------------------------------------+---------+----------------+------------+------------+---------+
+| 1Ge6rDuyCdYVGhXZjcK4251q67GXMKx6xK | Receive |     0.00120000 | 0.00100000 | 0.00020000 | 0/0     |
+| 1NVsB73WmDGXSxv77sh9PZENH2x3RRnkDY | Receive |     0.00130000 | 0.00100000 | 0.00030000 | 0/1     |
+| 1BkgqiHcvfnQ2wrPN5D2ycrvZas3nibMjC | Receive |     0.00040000 | 0.00000000 | 0.00040000 | 0/2     |
+| 12SisoiXLUEbkytL5Pzia1jBY8gJP5XN8D | Change  |     0.00184874 | 0.00000000 | 0.00184874 | 1/0     |
+| 1CkvACVpFwkPnMG13w9kXXE9YcsiyL4pcY | Change  |     0.00194876 | 0.00000000 | 0.00194876 | 1/1     |
++------------------------------------+---------+----------------+------------+------------+---------+
+
+```
+
+We can change up the fields.
+
+```
+./hd-wallet-addrs.php -g --xpub=xpub6BfKpqjTwvH21wJGWEfxLppb8sU7C6FJge2kWb9315oP4ZVqCXG29cdUtkyu7YQhHyfA5nt63nzcNZHYmqXYHDxYo8mm1Xq1dAC7YtodwUR --cols=type,abspath,relpath,addr --logfile=/tmp/log.txt
+ --- Wallet Discovery Report --- 
+
+Found 3 used Receive addresses and 2 used Change addresses.
+
++---------+--------------+---------+------------------------------------+
+| type    | abspath      | relpath | addr                               |
++---------+--------------+---------+------------------------------------+
+| Receive | m/44/0/0/0/0 | 0/0     | 1Ge6rDuyCdYVGhXZjcK4251q67GXMKx6xK |
+| Receive | m/44/0/0/0/1 | 0/1     | 1NVsB73WmDGXSxv77sh9PZENH2x3RRnkDY |
+| Receive | m/44/0/0/0/2 | 0/2     | 1BkgqiHcvfnQ2wrPN5D2ycrvZas3nibMjC |
+| Change  | m/44/0/0/1/0 | 1/0     | 12SisoiXLUEbkytL5Pzia1jBY8gJP5XN8D |
+| Change  | m/44/0/0/1/1 | 1/1     | 1CkvACVpFwkPnMG13w9kXXE9YcsiyL4pcY |
++---------+--------------+---------+------------------------------------+
+```
+
+Or get a list for easy copy/paste.
+
+```
+./hd-wallet-addrs.php -g --xpub=xpub6BfKpqjTwvH21wJGWEfxLppb8sU7C6FJge2kWb9315oP4ZVqCXG29cdUtkyu7YQhHyfA5nt63nzcNZHYmqXYHDxYo8mm1Xq1dAC7YtodwUR --format=addrlist --logfile=/tmp/log.txt --- Wallet Discovery Report --- 
+
+Found 3 used Receive addresses and 2 used Change addresses.
+
+1Ge6rDuyCdYVGhXZjcK4251q67GXMKx6xK
+1NVsB73WmDGXSxv77sh9PZENH2x3RRnkDY
+1BkgqiHcvfnQ2wrPN5D2ycrvZas3nibMjC
+12SisoiXLUEbkytL5Pzia1jBY8gJP5XN8D
+1CkvACVpFwkPnMG13w9kXXE9YcsiyL4pcY
+```
+
+Or JSON
+
+```
+./hd-wallet-addrs.php -g --xpub=xpub6BfKpqjTwvH21wJGWEfxLppb8sU7C6FJge2kWb9315oP4ZVqCXG29cdUtkyu7YQhHyfA5nt63nzcNZHYmqXYHDxYo8mm1Xq1dAC7YtodwUR --cols=type,abspath,relpath,addr --format=jsonpretty --logfile=/tmp/log.txt
+[
+    {
+        "type": "Receive",
+        "abspath": "m\/44\/0\/0\/0\/0",
+        "relpath": "0\/0",
+        "addr": "1Ge6rDuyCdYVGhXZjcK4251q67GXMKx6xK"
+    },
+    ...
+]
+```
+
+Or CSV
+
+```
+./hd-wallet-addrs.php -g --xpub=xpub6BfKpqjTwvH21wJGWEfxLppb8sU7C6FJge2kWb9315oP4ZVqCXG29cdUtkyu7YQhHyfA5nt63nzcNZHYmqXYHDxYo8mm1Xq1dAC7YtodwUR --cols=type,abspath,relpath,addr --format=csv --logfile=/tmp/log.txt
+type,abspath,relpath,addr
+Receive,m/44/0/0/0/0,0/0,1Ge6rDuyCdYVGhXZjcK4251q67GXMKx6xK
+Receive,m/44/0/0/0/1,0/1,1NVsB73WmDGXSxv77sh9PZENH2x3RRnkDY
+Receive,m/44/0/0/0/2,0/2,1BkgqiHcvfnQ2wrPN5D2ycrvZas3nibMjC
+Change,m/44/0/0/1/0,1/0,12SisoiXLUEbkytL5Pzia1jBY8gJP5XN8D
+Change,m/44/0/0/1/1,1/1,1CkvACVpFwkPnMG13w9kXXE9YcsiyL4pcY
+```
+
+# multi-sig examples.
+
+So far multi-sig has been tested with copay (bip44 and bip45) only.
+Older versions of Copay using bip45 require the --derivation=copaylegacy flag.
+
+multisig requires multiple xpub keys and use of the --numsig flag to indicate
+the required number of signers.  (m of n)
+
+## discovering an empty Copay 1.6.3+ (bip44) 2 of 3 wallet.
+
+This test wallet has no funds, so we use --include-unused to obtain the initial addresses up to the
+gap limit.  The gap limit default is 20, but we use 2 here for brevity.
+```
+./hd-wallet-addrs.php -g --numsig=2 --gap-limit=2  --xpub=xpub6CZte6DfeMoVwxv3ShiMwQjET47nRENqrkZaSXTcP7Yaja6sxyRbiyqPD7kfy4W2dTTuTdV4jHMmSe1k1qteTMN7qDLndt1RfQ8RLM3pjzb,xpub6DUGj5hRwp7t3DoH554Ce7p3KLepccYfG5BVbvyPSArTepacc3aPRDTMz3GSdoX1HgVYKBSaR6fFDm1daEtSQFBSNTq4X93pd8dBFyPW2gz,xpub6DRFPDtHueJ5sfqzcLSyoKL6TQZMofvjpLzsVXsWqjgYuAtUtdU8YjWFvpa2xegWLFeLQ38KLJzWdKQ3CsAQQLoMYnBsQy3FCeTDuxgcsfK --include-unused --logfile=/tmp/out.txt
+ --- Wallet Discovery Report --- 
+
+Found 2 used Receive addresses and 2 used Change addresses.
+
++------------------------------------+---------+----------------+------------+------------+---------+
+| addr                               | type    | total_received | total_sent | balance    | relpath |
++------------------------------------+---------+----------------+------------+------------+---------+
+| 339H3pYP9AKiEo74D1BWiSK8jhWXsrJ3yk | Receive |     0.00000000 | 0.00000000 | 0.00000000 | 0/0     |
+| 3NcBBWtDscKchgkUCY3eEQZgYh8STtcona | Receive |     0.00000000 | 0.00000000 | 0.00000000 | 0/1     |
+| 3QtjkbY8Km4v5KCgTZxD7VW2vPCsBqkV3V | Change  |     0.00000000 | 0.00000000 | 0.00000000 | 1/0     |
+| 3B7xNx7dCT6ydcVF1xQpEtG8UFeeh2PyAk | Change  |     0.00000000 | 0.00000000 | 0.00000000 | 1/1     |
++------------------------------------+---------+----------------+------------+------------+---------+
+```
+
+## discovering an empty Copay 1.1.x (bip45) 1 of 1 wallet.
+
+Legacy versions of Copay used bip45 in a special way that the tool cannot detect without help.
+
+Note the use of --derivation=copaylegacy
+
+```
+/home/websites/hd-wallet-addrs/tests/../hd-wallet-addrs.php -g --derivation=copaylegacy --gap-limit=2  --xpub=xpub697odnriKgTgWE4my6au8nd8haUfAMzLGFpDemAkRbCMgGVxANuj9DffNLgDjPA1dnxzi8oFmM79ZPgKVfCV7Saj8sQUL7tJfeZDuyQNGDm --include-unused --logfile=/tmp/out.txt
+ --- Wallet Discovery Report --- 
+
+Found 2 used Receive addresses and 2 used Change addresses.
+
++------------------------------------+---------+----------------+------------+------------+----------------+
+| addr                               | type    | total_received | total_sent | balance    | relpath        |
++------------------------------------+---------+----------------+------------+------------+----------------+
+| 3LHgjejeCnQEhLGpmc1q4RmPXypKhjbgpY | Receive |     0.00000000 | 0.00000000 | 0.00000000 | 2147483647/0/0 |
+| 3Jdd25xHSCDFrMeCoW62963vf22UoKBmtP | Receive |     0.00000000 | 0.00000000 | 0.00000000 | 2147483647/0/1 |
+| 3JZ3YR6sgyqq6xcGtpcAvYBCX7gM9cPU3c | Change  |     0.00000000 | 0.00000000 | 0.00000000 | 2147483647/1/0 |
+| 32KNwkcQzBHYejvnJpWDwUWMbHGZd4Q6fH | Change  |     0.00000000 | 0.00000000 | 0.00000000 | 2147483647/1/1 |
++------------------------------------+---------+----------------+------------+------------+----------------+
+```
+
+## discovering an empty Copay 1.1.x (bip45) 2 of 2 wallet.
+
+Again we must use --derivation=copaylegacy
+
+```
+./hd-wallet-addrs.php --derivation=copaylegacy -g --gap-limit=2  --xpub=xpub68bjYyPhqAwK4T8WtXuGvruSQoJu1vdLD7DYc591MkFCR7wD9gyzteFYmzRyytWJ2SzTqZNTgggvPEyqEy9oArjLF7xhte5js1Lp1EPipwJ,xpub68ufoGjY41tQqP4LpeyYornuNxm8DNy2Rn7KAPUTAwFouj821eqcVpWw1jonrm2Xg5jnnSrd1QPQzGve3f66ZLf6Ni9VY6aN3AjYa4e7XTE --numsig=2 --include-unused --logfile=/tmp/out.txt
+ --- Wallet Discovery Report --- 
+
+Found 2 used Receive addresses and 2 used Change addresses.
+
++------------------------------------+---------+----------------+------------+------------+----------------+
+| addr                               | type    | total_received | total_sent | balance    | relpath        |
++------------------------------------+---------+----------------+------------+------------+----------------+
+| 35uhrWpDTj3Y7EwR9AWjACGfT47txtpH1v | Receive |     0.00000000 | 0.00000000 | 0.00000000 | 2147483647/0/0 |
+| 3BnXxkW9CVCLn1EboGDJ8434eKFWZGHsjn | Receive |     0.00000000 | 0.00000000 | 0.00000000 | 2147483647/0/1 |
+| 38dzdCQXatNdT9nWG7thpGC9KjBVLphZRP | Change  |     0.00000000 | 0.00000000 | 0.00000000 | 2147483647/1/0 |
+| 3CfbgQ5BxWRFBYXJxEVAmVCZsatdJfc2rS | Change  |     0.00000000 | 0.00000000 | 0.00000000 | 2147483647/1/1 |
++------------------------------------+---------+----------------+------------+------------+----------------+
+```
+
+# How discovery works
+
+todo: more explanation.
+
+Unfortunately, neither bitcoind nor btcd provide an API for obtaining summary
+information about arbitrary addresses.
+
+At present, the supported blockchain APIs are:
+* blockchain.info: preferred, as it supports multi-address lookup.
+* toshi:  online service at toshi.io, or run locally.
+* insight: online service at insight.bitpay.com, or run locally.
+
+Any public address or set of addresses may be reported on.
+
+# Use at your own risk.
+
+The author makes no claims or guarantees of correctness.
+
+
+# Output formats
+
+The report may be printed in the following formats:
+* plain  - an ascii formatted table, as above.  intended for humans.
+* csv - CSV format.  For spreadsheet programs.
+* json - raw json format.  for programs to read easily.
+* jsonpretty - pretty json format.  for programs or humans.
+* addrlist - single column address list. for easy cut/paste.
+
+Additionally, the report may contain incoming transactions only, outgoing
+transactions only, or both types.
+
+# Usage
+
+```
+$ ./hd-wallet-addrs.php 
+
+   hd-wallet-addrs.php
+
+   This script discovers bitcoin HD wallet addresses that have been used.
+
+   Options:
+
+    -g                   go!  ( required )
+    
+    --xpub=<csv>         comma separated list of xpub keys
+    --xpubfile=<path>    file containing xpub keys, one per line.
+                           note: multiple keys implies multisig m of n.
+
+    --derivation=<type>  bip32|bip44|bip45|copaylegacy|relative.
+                           default=relative
+    --numsig=<int>       number of required signers for m-of-n multisig wallet.
+                           (required for multisig)
+    
+    --gap-limit=<int>    bip32 unused addr gap limit. default=20
+    --include-unused     if present, unused addresses in gaps less than
+                         gap limit will be included, or if wallet empty.
+    
+    --api=<api>          toshi|insight|blockchaindotinfo
+                           default = blockchaindotinfo  (fastest)
+    
+    --cols=<cols>        a csv list of columns, or "all"
+                         all:
+                          (addr,type,total_received,total_sent,balance,relpath,abspath,xpub)
+                         default:
+                          (addr,type,total_received,total_sent,balance,relpath)
+
+    --outfile=<path>     specify output file path.
+    --format=<format>    txt|csv|json|jsonpretty|html|addrlist|all   default=txt
+    
+                         if all is specified then a file will be created
+                         for each format with appropriate extension.
+                         only works when outfile is specified.
+                         
+    --toshi=<url>       toshi server. defaults to https://bitcoin.toshi.io
+    
+    --insight=<url>     insight server. defaults to https://insight.bitpay.com
+    
+    --oracle-raw=<p>    path to save raw server response, optional.
+    --oracle-json=<p>   path to save formatted server response, optional.
+    
+    --logfile=<file>    path to logfile. if not present logs to stdout.
+    --loglevel=<level>  debug,info,specialinfo,warning,exception,fatalerror
+                          default = info
+```
+
+
+# Installation and Running.
+
+Basics
+```
+ git clone https://github.com/dan-da/hd-wallet-addrs
+ cd hd-wallet-addrs
+ composer install
+```
+
+Run Test cases
+```
+ cd tests
+ ./test_runner.php
+```
+
+It is really slow to generate keys in PHP.  For a huge speedup, you can install the
+secp256k1 extension from:
+
+<a href="https://github.com/Bit-Wasp/secp256k1-php">https://github.com/Bit-Wasp/secp256k1-php</a>
+
+note: at present time, this extension sometimes fails to read xpub keys correctly.
+An issue has been filed on the project's github.
+
+
+# Blockchain API provider notes.
+
+tip!  use the --api flag to switch between blockchain API providers.
+
+Each API has strengths and weaknesses. Some are faster than others,
+or easier/harder to run locally. The blockchain.info service is recommended
+because it presently has the fastest API, and it is the default.
+
+Ideally for best privacy, there would be an option to run against a local
+instance of bitcoind or btcd, but neither of them provide the necessary API.
+
+Still, for those concerned about privacy, it is possible to run either toshi
+or insight locally yourself, and that is recommended whenever possible.
+
+
+## Toshi
+
+as of 2015-12-30:
+
+* does NOT support multi address lookup in a single call.
+* each candidate address must be queried separately.
+
+## Insight
+
+as of 2015-12-30:
+
+* does NOT support multi address lookup in a single call.
+* each candidate address must be queried separately.
+
+## blockchain.info
+
+as of 2015-12-30:
+
+* supports multi address lookup in a single call.
+* returns extra un-needed info such as last 50 tx.
+* returns addresses in different order than requested.
+
+## btcd
+
+as of 2015-12-30:
+
+* does not provide a suitable API for querying address total_received
+* does have a public address index that should make such an API straight-forward.
+
+## bitcoind
+
+as of 2015-12-30:
+
+* does not provide a suitable API for querying address total_received
+* does not have a public address index.  Implementing an API would be difficult.
+
+
+# Todos
+
+* add option to return only Receive or Change instead of both.
+* test with additional wallet software.
+* Add bip39 support to obtain xpub from secret words.  maybe?
+* Add suitable API to btcd.
