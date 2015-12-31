@@ -323,6 +323,8 @@ class walletaddrsreport {
     static public function print_results( $params, $results ) {
         $format = $params['format'];
         $outfile = @$params['outfile'];
+        
+        $summary = self::result_count_by_type( $results );
 
         // remove columns not in report and change column order.
         $report_cols = $params['cols'];
@@ -344,24 +346,24 @@ class walletaddrsreport {
                                     pathinfo($outfile, PATHINFO_FILENAME),
                                     $format );
                 
-                self::print_results_worker( $results, $outfile, $format );
+                self::print_results_worker( $summary, $results, $outfile, $format );
             }
         }
         else {
-            self::print_results_worker( $results, $outfile, $format );
+            self::print_results_worker( $summary, $results, $outfile, $format );
         }
     }
 
     /* prints out single report in specified format, either to stdout or file.
      */
-    static protected function print_results_worker( $results, $outfile, $format ) {
+    static protected function print_results_worker( $summary, $results, $outfile, $format ) {
 
         $fname = $outfile ?: 'php://stdout';
         $fh = fopen( $fname, 'w' );
 
         switch( $format ) {
-            case 'txt':        self::write_results_fixed_width( $fh, $results ); break;
-            case 'addrlist':   self::write_results_addrlist( $fh, $results );    break;
+            case 'txt':        self::write_results_fixed_width( $fh, $results, $summary ); break;
+            case 'addrlist':   self::write_results_addrlist( $fh, $results, $summary );    break;
             case 'csv':        self::write_results_csv( $fh, $results );         break;
             case 'json':       self::write_results_json( $fh, $results );        break;
             case 'html':       self::write_results_html( $fh, $results );        break;
@@ -433,17 +435,15 @@ class walletaddrsreport {
     
     /* writes out results as a plain text table.  similar to mysql console results.
      */
-    static protected function write_results_fixed_width( $fh, $results ) {
-
-        $counts = self::result_count_by_type( $results );
+    static protected function write_results_fixed_width( $fh, $results, $summary ) {
 
         fwrite( $fh, " --- Wallet Discovery Report --- \n\n" );
         fprintf($fh, "Found %s Receive addresses and %s Change addresses.\n" .
                      "  Receive --  Used: %s\tUnused: %s\n" .
                      "  Change  --  Used: %s\tUnused: %s\n\n",
-                     $counts['num_receive'], $counts['num_change'],
-                     $counts['num_receive_used'], $counts['num_receive_unused'],
-                     $counts['num_change_used'], $counts['num_change_unused']
+                     $summary['num_receive'], $summary['num_change'],
+                     $summary['num_receive_used'], $summary['num_receive_unused'],
+                     $summary['num_change_used'], $summary['num_change_unused']
                 );
         
         $buf = mysqlutil::format_results_fixed_width( $results );
@@ -454,17 +454,15 @@ class walletaddrsreport {
     
     /* writes out results as a plain text list of addresses. single column only.
      */
-    static protected function write_results_addrlist( $fh, $results ) {
+    static protected function write_results_addrlist( $fh, $results, $summary ) {
 
-        $counts = self::result_count_by_type( $results );
-    
         fwrite( $fh, " --- Wallet Discovery Report --- \n\n" );
         fprintf($fh, "Found %s Receive addresses and %s Change addresses.\n" .
                      "  Receive --  Used: %s\tUnused: %s\n" .
                      "  Change  --  Used: %s\tUnused: %s\n\n",
-                     $counts['num_receive'], $counts['num_change'],
-                     $counts['num_receive_used'], $counts['num_receive_unused'],
-                     $counts['num_change_used'], $counts['num_change_unused']
+                     $summary['num_receive'], $summary['num_change'],
+                     $summary['num_receive_used'], $summary['num_receive_unused'],
+                     $summary['num_change_used'], $summary['num_change_unused']
                 );
         
         foreach( $results as $info ) {
