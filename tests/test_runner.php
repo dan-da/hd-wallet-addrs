@@ -109,7 +109,7 @@ class hdwalletaddrscmd {
     static public function run( $args, $expect_rc=0 ) {
         $cmd = sprintf( "%s %s", dirname(__FILE__) . "/../hd-wallet-addrs.php", $args );
         exec( $cmd, $output, $rc );
-echo $cmd . "\n";
+
         if( $rc != $expect_rc ) {
             $output = implode("\n", $output );
             throw new exception( "hd-wallet-addrs command failed.  expecting rc=$expect_rc, got rc=$rc\nCommand was: $cmd\n\nOutput was:\n$output\n\n" );
