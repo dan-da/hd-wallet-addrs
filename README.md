@@ -20,11 +20,13 @@ addresses for accounting purposes.  In particular for use with:
 # Let's see some examples.
 
 ```
-./hd-wallet-addrs.php -g --xpub=xpub6BfKpqjTwvH21wJGWEfxLppb8sU7C6FJge2kWb9315oP4ZVqCXG29cdUtkyu7YQhHyfA5nt63nzcNZHYmqXYHDxYo8mm1Xq1dAC7YtodwUR --logfile=/tmp/log.txt
+$ ./hd-wallet-addrs.php -g --xpub=xpub6BfKpqjTwvH21wJGWEfxLppb8sU7C6FJge2kWb9315oP4ZVqCXG29cdUtkyu7YQhHyfA5nt63nzcNZHYmqXYHDxYo8mm1Xq1dAC7YtodwUR --logfile=/tmp/log.txt
 
  --- Wallet Discovery Report --- 
 
-Found 3 used Receive addresses and 2 used Change addresses.
+Found 3 Receive addresses and 2 Change addresses.
+  Receive --  Used: 3   Unused: 0
+  Change  --  Used: 2   Unused: 0
 
 +------------------------------------+---------+----------------+------------+------------+---------+
 | addr                               | type    | total_received | total_sent | balance    | relpath |
@@ -35,16 +37,18 @@ Found 3 used Receive addresses and 2 used Change addresses.
 | 12SisoiXLUEbkytL5Pzia1jBY8gJP5XN8D | Change  |     0.00184874 | 0.00000000 | 0.00184874 | 1/0     |
 | 1CkvACVpFwkPnMG13w9kXXE9YcsiyL4pcY | Change  |     0.00194876 | 0.00000000 | 0.00194876 | 1/1     |
 +------------------------------------+---------+----------------+------------+------------+---------+
-
 ```
 
-We can change up the fields.
+We can change up the fields and specify to use bip44 derivation to generate an absolute path.
 
 ```
-./hd-wallet-addrs.php -g --xpub=xpub6BfKpqjTwvH21wJGWEfxLppb8sU7C6FJge2kWb9315oP4ZVqCXG29cdUtkyu7YQhHyfA5nt63nzcNZHYmqXYHDxYo8mm1Xq1dAC7YtodwUR --cols=type,abspath,relpath,addr --logfile=/tmp/log.txt
+$ ./hd-wallet-addrs.php -g --xpub=xpub6BfKpqjTwvH21wJGWEfxLppb8sU7C6FJge2kWb9315oP4ZVqCXG29cdUtkyu7YQhHyfA5nt63nzcNZHYmqXYHDxYo8mm1Xq1dAC7YtodwUR --cols=type,abspath,relpath,addr --derivation=bip44 --logfile=/tmp/log.txt
+
  --- Wallet Discovery Report --- 
 
-Found 3 used Receive addresses and 2 used Change addresses.
+Found 3 Receive addresses and 2 Change addresses.
+  Receive --  Used: 3   Unused: 0
+  Change  --  Used: 2   Unused: 0
 
 +---------+--------------+---------+------------------------------------+
 | type    | abspath      | relpath | addr                               |
@@ -60,9 +64,13 @@ Found 3 used Receive addresses and 2 used Change addresses.
 Or get a list for easy copy/paste.
 
 ```
-./hd-wallet-addrs.php -g --xpub=xpub6BfKpqjTwvH21wJGWEfxLppb8sU7C6FJge2kWb9315oP4ZVqCXG29cdUtkyu7YQhHyfA5nt63nzcNZHYmqXYHDxYo8mm1Xq1dAC7YtodwUR --format=addrlist --logfile=/tmp/log.txt --- Wallet Discovery Report --- 
+$ ./hd-wallet-addrs.php -g --xpub=xpub6BfKpqjTwvH21wJGWEfxLppb8sU7C6FJge2kWb9315oP4ZVqCXG29cdUtkyu7YQhHyfA5nt63nzcNZHYmqXYHDxYo8mm1Xq1dAC7YtodwUR --format=addrlist --logfile=/tmp/log.txt
 
-Found 3 used Receive addresses and 2 used Change addresses.
+ --- Wallet Discovery Report --- 
+
+Found 3 Receive addresses and 2 Change addresses.
+  Receive --  Used: 3   Unused: 0
+  Change  --  Used: 2   Unused: 0
 
 1Ge6rDuyCdYVGhXZjcK4251q67GXMKx6xK
 1NVsB73WmDGXSxv77sh9PZENH2x3RRnkDY
@@ -74,7 +82,7 @@ Found 3 used Receive addresses and 2 used Change addresses.
 Or JSON
 
 ```
-./hd-wallet-addrs.php -g --xpub=xpub6BfKpqjTwvH21wJGWEfxLppb8sU7C6FJge2kWb9315oP4ZVqCXG29cdUtkyu7YQhHyfA5nt63nzcNZHYmqXYHDxYo8mm1Xq1dAC7YtodwUR --cols=type,abspath,relpath,addr --format=jsonpretty --logfile=/tmp/log.txt
+./hd-wallet-addrs.php -g --xpub=xpub6BfKpqjTwvH21wJGWEfxLppb8sU7C6FJge2kWb9315oP4ZVqCXG29cdUtkyu7YQhHyfA5nt63nzcNZHYmqXYHDxYo8mm1Xq1dAC7YtodwUR --cols=type,abspath,relpath,addr --format=jsonpretty  --derivation=bip44 --logfile=/tmp/log.txt
 [
     {
         "type": "Receive",
@@ -89,7 +97,7 @@ Or JSON
 Or CSV
 
 ```
-./hd-wallet-addrs.php -g --xpub=xpub6BfKpqjTwvH21wJGWEfxLppb8sU7C6FJge2kWb9315oP4ZVqCXG29cdUtkyu7YQhHyfA5nt63nzcNZHYmqXYHDxYo8mm1Xq1dAC7YtodwUR --cols=type,abspath,relpath,addr --format=csv --logfile=/tmp/log.txt
+./hd-wallet-addrs.php -g --xpub=xpub6BfKpqjTwvH21wJGWEfxLppb8sU7C6FJge2kWb9315oP4ZVqCXG29cdUtkyu7YQhHyfA5nt63nzcNZHYmqXYHDxYo8mm1Xq1dAC7YtodwUR --cols=type,abspath,relpath,addr --format=csv  --derivation=bip44 --logfile=/tmp/log.txt
 type,abspath,relpath,addr
 Receive,m/44/0/0/0/0,0/0,1Ge6rDuyCdYVGhXZjcK4251q67GXMKx6xK
 Receive,m/44/0/0/0/1,0/1,1NVsB73WmDGXSxv77sh9PZENH2x3RRnkDY
@@ -111,10 +119,13 @@ the required number of signers.  (m of n)
 This test wallet has no funds, so we use --include-unused to obtain the initial addresses up to the
 gap limit.  The gap limit default is 20, but we use 2 here for brevity.
 ```
-./hd-wallet-addrs.php -g --numsig=2 --gap-limit=2  --xpub=xpub6CZte6DfeMoVwxv3ShiMwQjET47nRENqrkZaSXTcP7Yaja6sxyRbiyqPD7kfy4W2dTTuTdV4jHMmSe1k1qteTMN7qDLndt1RfQ8RLM3pjzb,xpub6DUGj5hRwp7t3DoH554Ce7p3KLepccYfG5BVbvyPSArTepacc3aPRDTMz3GSdoX1HgVYKBSaR6fFDm1daEtSQFBSNTq4X93pd8dBFyPW2gz,xpub6DRFPDtHueJ5sfqzcLSyoKL6TQZMofvjpLzsVXsWqjgYuAtUtdU8YjWFvpa2xegWLFeLQ38KLJzWdKQ3CsAQQLoMYnBsQy3FCeTDuxgcsfK --include-unused --logfile=/tmp/out.txt
+$ ./hd-wallet-addrs.php -g --numsig=2 --gap-limit=2  --xpub=xpub6CZte6DfeMoVwxv3ShiMwQjET47nRENqrkZaSXTcP7Yaja6sxyRbiyqPD7kfy4W2dTTuTdV4jHMmSe1k1qteTMN7qDLndt1RfQ8RLM3pjzb,xpub6DUGj5hRwp7t3DoH554Ce7p3KLepccYfG5BVbvyPSArTepacc3aPRDTMz3GSdoX1HgVYKBSaR6fFDm1daEtSQFBSNTq4X93pd8dBFyPW2gz,xpub6DRFPDtHueJ5sfqzcLSyoKL6TQZMofvjpLzsVXsWqjgYuAtUtdU8YjWFvpa2xegWLFeLQ38KLJzWdKQ3CsAQQLoMYnBsQy3FCeTDuxgcsfK --include-unused --logfile=/tmp/out.txt
+
  --- Wallet Discovery Report --- 
 
-Found 2 used Receive addresses and 2 used Change addresses.
+Found 2 Receive addresses and 2 Change addresses.
+  Receive --  Used: 0   Unused: 2
+  Change  --  Used: 0   Unused: 2
 
 +------------------------------------+---------+----------------+------------+------------+---------+
 | addr                               | type    | total_received | total_sent | balance    | relpath |
@@ -132,11 +143,17 @@ Legacy versions of Copay used bip45 in a special way that the tool cannot detect
 
 Note the use of --derivation=copaylegacy
 
+(Copay 1.6.3+ 1 of 1 wallets use bip44 derivation and do not require any special arguments.)
+
+
 ```
-/home/websites/hd-wallet-addrs/tests/../hd-wallet-addrs.php -g --derivation=copaylegacy --gap-limit=2  --xpub=xpub697odnriKgTgWE4my6au8nd8haUfAMzLGFpDemAkRbCMgGVxANuj9DffNLgDjPA1dnxzi8oFmM79ZPgKVfCV7Saj8sQUL7tJfeZDuyQNGDm --include-unused --logfile=/tmp/out.txt
+$ ./hd-wallet-addrs.php -g --derivation=copaylegacy --gap-limit=2  --xpub=xpub697odnriKgTgWE4my6au8nd8haUfAMzLGFpDemAkRbCMgGVxANuj9DffNLgDjPA1dnxzi8oFmM79ZPgKVfCV7Saj8sQUL7tJfeZDuyQNGDm --include-unused --logfile=/tmp/out.txt
+
  --- Wallet Discovery Report --- 
 
-Found 2 used Receive addresses and 2 used Change addresses.
+Found 2 Receive addresses and 2 Change addresses.
+  Receive --  Used: 0   Unused: 2
+  Change  --  Used: 0   Unused: 2
 
 +------------------------------------+---------+----------------+------------+------------+----------------+
 | addr                               | type    | total_received | total_sent | balance    | relpath        |
@@ -153,10 +170,13 @@ Found 2 used Receive addresses and 2 used Change addresses.
 Again we must use --derivation=copaylegacy
 
 ```
-./hd-wallet-addrs.php --derivation=copaylegacy -g --gap-limit=2  --xpub=xpub68bjYyPhqAwK4T8WtXuGvruSQoJu1vdLD7DYc591MkFCR7wD9gyzteFYmzRyytWJ2SzTqZNTgggvPEyqEy9oArjLF7xhte5js1Lp1EPipwJ,xpub68ufoGjY41tQqP4LpeyYornuNxm8DNy2Rn7KAPUTAwFouj821eqcVpWw1jonrm2Xg5jnnSrd1QPQzGve3f66ZLf6Ni9VY6aN3AjYa4e7XTE --numsig=2 --include-unused --logfile=/tmp/out.txt
+$ ./hd-wallet-addrs.php --derivation=copaylegacy -g --gap-limit=2  --xpub=xpub68bjYyPhqAwK4T8WtXuGvruSQoJu1vdLD7DYc591MkFCR7wD9gyzteFYmzRyytWJ2SzTqZNTgggvPEyqEy9oArjLF7xhte5js1Lp1EPipwJ,xpub68ufoGjY41tQqP4LpeyYornuNxm8DNy2Rn7KAPUTAwFouj821eqcVpWw1jonrm2Xg5jnnSrd1QPQzGve3f66ZLf6Ni9VY6aN3AjYa4e7XTE --numsig=2 --include-unused --logfile=/tmp/out.txt
+
  --- Wallet Discovery Report --- 
 
-Found 2 used Receive addresses and 2 used Change addresses.
+Found 2 Receive addresses and 2 Change addresses.
+  Receive --  Used: 0   Unused: 2
+  Change  --  Used: 0   Unused: 2
 
 +------------------------------------+---------+----------------+------------+------------+----------------+
 | addr                               | type    | total_received | total_sent | balance    | relpath        |
