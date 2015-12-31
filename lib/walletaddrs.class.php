@@ -156,7 +156,7 @@ class walletaddrs {
                         mylogger()->log( "Generated $i public keys ($typename)", mylogger::info );
                     }
                     $relpath = $relpath_base . (strlen($relpath_base) ? '/' : '') . "$type/$i";
-                    $abspath = $abspath_base . "/$type/$i";
+                    $abspath = strlen($abspath_base) ? $abspath_base . "/$type/$i" : '';
                     $key = $master->derivePath($relpath);
                     
                     // fixme: hack for copay/multisig.  maybe should use a callback?
@@ -263,7 +263,7 @@ class walletaddrs {
                 break;
             case 'relative':
                 $relpath_base = '';
-                $abspath_base = null;
+                $abspath_base = '';
                 break;
             default:
                 throw new exception( "Unknown derivation type: $type");
