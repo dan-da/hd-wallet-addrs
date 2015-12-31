@@ -41,6 +41,8 @@ Found 3 Receive addresses and 2 Change addresses.
 
 We can change up the fields and specify to use bip44 derivation to generate an absolute path.
 
+Tip: The abspath column is empty when --derivation=relative, which is the default.
+
 ```
 $ ./hd-wallet-addrs.php -g --xpub=xpub6BfKpqjTwvH21wJGWEfxLppb8sU7C6FJge2kWb9315oP4ZVqCXG29cdUtkyu7YQhHyfA5nt63nzcNZHYmqXYHDxYo8mm1Xq1dAC7YtodwUR --cols=type,abspath,relpath,addr --derivation=bip44 --logfile=/tmp/log.txt
 
