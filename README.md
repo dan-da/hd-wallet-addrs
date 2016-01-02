@@ -198,10 +198,10 @@ for your wallet in order and checking if each one has been used or not.
 A slightly more technical description of the process:
 * starting from the extended public key (xpub)
 * for receive addresses, then change addresses
-** derive batches of xpub child addresses (bip32: 0/*)
-** for each batch
-*** check if each address has received funds  (API call to oracle/server)
-*** until 20 (default) unused addresses in a row are found.
+  * derive batches of xpub child addresses (bip32: 0/*)
+  * for each batch
+    * check if each address has received funds  (API call to oracle/server)
+    * until 20 (default) unused addresses in a row are found.
 
 # Privacy implications
 
