@@ -145,7 +145,7 @@ class walletaddrs {
                 // otherwise, set it to 1 to minimize total API calls.
                 // warning:  if secp256k1 extension not installed, addr generation will be slowest factor.
                 // todo: check if extension installed, adjust batch size for multiaddr.
-                $batchsize = $api->service_supports_multiaddr() ? $gap_limit : 1;
+                $batchsize = $api->service_supports_multiaddr() ? $gap_limit * 2: 1;
                 
                 $end = $batchnum * $batchsize;
                 $start = $end - ($batchsize -1);
@@ -335,7 +335,7 @@ class walletaddrsreport {
                 $r[$colname] = $tmp[$colname];
             }
         }
-        
+
         if( $outfile && $format == 'all' ) {
             $formats = array( 'txt', 'csv', 'json', 'jsonpretty', 'html', 'addrlist' );
             
