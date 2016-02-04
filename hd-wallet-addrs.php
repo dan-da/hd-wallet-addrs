@@ -59,7 +59,8 @@ function get_cli_params() {
                                   'api:', 'insight:',
                                   'list-cols',
                                   'oracle-raw:', 'oracle-json:',
-                                  'include-unused'
+                                  'include-unused',
+                                  'version', 'help',
                                   ) );        
 
     return $params;
@@ -70,6 +71,16 @@ function get_cli_params() {
  */
 function process_cli_params( $params ) {
     $success = 0;   // 0 == success.
+    
+    if( isset( $params['version'] ) ) {
+        print_version();
+        return [$params, 2];
+    }
+    if( isset( $params['help']) || !isset($params['g']) ) {
+        print_help();
+        return [$params, 1];
+    }
+    
     
     if( @$params['logfile'] ) {
         mylogger()->set_log_file( $params['logfile'] );
@@ -112,14 +123,17 @@ function process_cli_params( $params ) {
     $params['oracle-raw'] = @$params['oracle-raw'] ?: null;
     $params['oracle-json'] = @$params['oracle-json'] ?: null;
     
-    
-    if( !isset($params['g']) ) {
-        print_help();
-        $success = 1;
-    }
-    
     return [$params, $success];
 }
+
+/**
+ * prints program version text
+ */
+function print_version() {
+    $version = @file_get_contents(  __DIR__ . '/VERSION');
+    echo $version ?: 'version unknown' . "\n";
+}
+
 
 /* prints CLI help text
  */
