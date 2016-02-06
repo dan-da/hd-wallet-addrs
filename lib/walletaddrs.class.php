@@ -117,10 +117,10 @@ class walletaddrs {
 
         $params = $this->get_params();
         $addrs = array();      // filtered addrs.
-        $all_addrs = array();  // all addrs
         $gap_limit = $params['gap-limit'];
         $include_unused = $params['include-unused'];
         $network = Bitcoin::getNetwork();
+        $gen_only = @$params['gen-only'];
         
         list($relpath_base, $abspath_base) = $this->get_derivation_paths( $params['derivation'] );
 
@@ -146,6 +146,10 @@ class walletaddrs {
                 // warning:  if secp256k1 extension not installed, addr generation will be slowest factor.
                 // todo: check if extension installed, adjust batch size for multiaddr.
                 $batchsize = $api->service_supports_multiaddr() ? $gap_limit * 2: 1;
+                
+                if( $gen_only ) {
+                    $batchsize = $type == self::receive_idx ? $gen_only['receive'] : $gen_only['change'];
+                }
                 
                 $end = $batchnum * $batchsize;
                 $start = $end - ($batchsize -1);
@@ -181,60 +185,50 @@ class walletaddrs {
                                               'index' => $i );
                 }
 
-                mylogger()->log( sprintf( "Querying addresses %s to %s...", $start, $end), mylogger::info );
-        
-                $response = $api->get_addresses_info( array_keys($batch), $params );
-
-
-                foreach( $response as $r ) {
-                    if( $r['total_received'] == 0 ) {
-                        $gap ++;
-                        if( $gap > $gap_limit ) {
-                            break 2;
-                        }
-                    }
-                    else {
-                        $gap = 0;
-                    }
-                    // note: it would use less memory to only populate
-                    // alladdrs, then post-process it later.
-                    $r['type'] = $typename;
-                    $batchinfo = $batch[$r['addr']];
-                    $r['relpath'] = $batchinfo['relpath'];
-                    $r['abspath'] = $batchinfo['abspath'];
-                    $r['xpub'] = $batchinfo['xpub'];
-                    $alladdrs[] = $r;
-                    if( $r['total_received'] > 0 || $include_unused ) {
+                if( $gen_only ) {
+                    foreach( $batch as $addr => $batchinfo ) {
+                        $r = ['addr' => $addr,
+                              'total_received' => null,
+                              'total_sent' => null,
+                              'balance' => null,
+                              'type' => $typename,
+                              'relpath' => $batchinfo['relpath'],
+                              'abspath' => $batchinfo['abspath'],
+                              'xpub' => $batchinfo['xpub']
+                             ];
                         $addrs[] = $r;
                     }
+                    break;
                 }
+                else {
+                    mylogger()->log( sprintf( "Querying addresses %s to %s...", $start, $end), mylogger::info );
+                    $response = $api->get_addresses_info( array_keys($batch), $params );
+    
+                    foreach( $response as $r ) {
+                        if( $r['total_received'] == 0 ) {
+                            $gap ++;
+                            if( $gap > $gap_limit ) {
+                                break 2;
+                            }
+                        }
+                        else {
+                            $gap = 0;
+                        }
+                        $r['type'] = $typename;
+                        $batchinfo = $batch[$r['addr']];
+                        $r['relpath'] = $batchinfo['relpath'];
+                        $r['abspath'] = $batchinfo['abspath'];
+                        $r['xpub'] = $batchinfo['xpub'];
+                        if( $r['total_received'] > 0 || $include_unused ) {
+                            $addrs[] = $r;
+                        }
+                    }
+                }
+        
                 $batchnum ++;
             }
         }
 
-        // if wallet is empty and $include_unused then we include addrs up to gap limit.
-        if( !count($addrs) && $include_unused ) {
-            $count_chg = 0;
-            $count_rcv = 0;
-            foreach( $alladdrs as $a ) {
-                switch( strtolower( $alladdrs['type'] ) ) {
-                    case 'receive':
-                        $count_rcv ++;
-                        if( $count_rcv < $gap_limit ) {
-                            $addrs[] = $a;
-                        }
-                        break;
-                    case 'change':
-                        $count_rcv ++;
-                        if( $count_rcv < $gap_limit ) {
-                            $addrs[] = $a;
-                        }
-                        break;
-                    default:
-                        throw new Exception( "invalid type" );
-                }
-            }
-        }
         return $addrs;
     }
 
@@ -283,6 +277,11 @@ class walletaddrs {
     static public function default_cols() {
         return ['addr', 'type', 'total_received', 'total_sent', 'balance', 'relpath'];
     }
+
+    static public function default_cols_gen_only() {
+        return ['addr', 'type', 'relpath'];
+    }
+
     
     /**
      * Implements a heuristic to differentiate bip44 from bip32 based on
@@ -325,6 +324,7 @@ class walletaddrsreport {
         $outfile = @$params['outfile'];
         
         $summary = self::result_count_by_type( $results );
+        $summary['gen-only'] = $params['gen-only'];
 
         // remove columns not in report and change column order.
         $report_cols = $params['cols'];
@@ -438,13 +438,16 @@ class walletaddrsreport {
     static protected function write_results_fixed_width( $fh, $results, $summary ) {
 
         fwrite( $fh, " --- Wallet Discovery Report --- \n\n" );
-        fprintf($fh, "Found %s Receive addresses and %s Change addresses.\n" .
-                     "  Receive --  Used: %s\tUnused: %s\n" .
-                     "  Change  --  Used: %s\tUnused: %s\n\n",
-                     $summary['num_receive'], $summary['num_change'],
-                     $summary['num_receive_used'], $summary['num_receive_unused'],
-                     $summary['num_change_used'], $summary['num_change_unused']
-                );
+        
+        if( !$summary['gen-only'] ) {
+            fprintf($fh, "Found %s Receive addresses and %s Change addresses.\n" .
+                         "  Receive --  Used: %s\tUnused: %s\n" .
+                         "  Change  --  Used: %s\tUnused: %s\n\n",
+                         $summary['num_receive'], $summary['num_change'],
+                         $summary['num_receive_used'], $summary['num_receive_unused'],
+                         $summary['num_change_used'], $summary['num_change_unused']
+                    );
+        }
         
         $buf = mysqlutil::format_results_fixed_width( $results );
         fwrite( $fh, $buf );
@@ -457,13 +460,16 @@ class walletaddrsreport {
     static protected function write_results_addrlist( $fh, $results, $summary ) {
 
         fwrite( $fh, " --- Wallet Discovery Report --- \n\n" );
-        fprintf($fh, "Found %s Receive addresses and %s Change addresses.\n" .
-                     "  Receive --  Used: %s\tUnused: %s\n" .
-                     "  Change  --  Used: %s\tUnused: %s\n\n",
-                     $summary['num_receive'], $summary['num_change'],
-                     $summary['num_receive_used'], $summary['num_receive_unused'],
-                     $summary['num_change_used'], $summary['num_change_unused']
-                );
+        
+        if( !$summary['gen-only'] ) {
+            fprintf($fh, "Found %s Receive addresses and %s Change addresses.\n" .
+                         "  Receive --  Used: %s\tUnused: %s\n" .
+                         "  Change  --  Used: %s\tUnused: %s\n\n",
+                         $summary['num_receive'], $summary['num_change'],
+                         $summary['num_receive_used'], $summary['num_receive_unused'],
+                         $summary['num_change_used'], $summary['num_change_unused']
+                    );
+        }
         
         foreach( $results as $info ) {
             fprintf( $fh, "%s\n", $info['addr'] );
