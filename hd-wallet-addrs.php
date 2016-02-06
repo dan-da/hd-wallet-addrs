@@ -60,7 +60,7 @@ function get_cli_params() {
                                   'list-cols',
                                   'oracle-raw:', 'oracle-json:',
                                   'include-unused',
-                                  'gen-only:',
+                                  'gen-only:', 'type:',
                                   'version', 'help',
                                   ) );        
 
@@ -105,19 +105,10 @@ function process_cli_params( $params ) {
         $params['numsig'] = @$params['numsig'] ?: (count($xpublist)==1 ? 1 : null);
     }
     
-    $genonly = @$params['gen-only'];
-    // --gen-only=1     ---> ['receive' => 1, 'change' => 1]
-    // --gen-only=1,2   ---> ['receive' => 1, 'change' => 2]
-    // --gen-only=      ---> null
-    if( $genonly ) {
-        $parts = explode( ',', $genonly );
-        $arr = count( $parts) == 1 ? [$parts[0],$parts[0]] : $parts;
-        if( !is_numeric( $arr[0] ) || !is_numeric( $arr[1] ) ) {
-            print_help();
-            return [$params, 1];
-        }
-        $params['gen-only'] = ['receive' => $arr[0], 'change' => $arr[1]];
-    }    
+    $params['gen-only'] = is_numeric( @$params['gen-only'] ) ? $params['gen-only'] : null;
+    
+    $types = array( 'receive', 'change', 'both');
+    $params['type'] = in_array( @$params['type'], $types ) ? $params['type'] : 'both';
     
     if( count($xpublist) > 1 && !@$params['numsig'] ) {
         throw new Exception( "multisig requires --numsig" );
@@ -189,10 +180,8 @@ function print_help() {
     --gen-only=<n>      will generate n receive addresses and n change addresses
                           but will not query the blockchain to determine if they
                           have been used.
-
-    --gen-only=<n>,<m>  will generate n receive addresses and m change addresses
-                          but will not query the blockchain to determine if they
-                          have been used.
+                          
+    --type=<type>       receive|change|both.  default=both
     
     --api=<api>          toshi|insight|blockchaindotinfo
                            default = blockchaindotinfo  (fastest)

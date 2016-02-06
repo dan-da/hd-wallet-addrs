@@ -127,7 +127,14 @@ class walletaddrs {
         $types = self::addrtypes();
         $api = blockchain_api_factory::instance( $params['api'] );
         
+        $tmap = array( 'receive' => self::receive_idx,
+                       'change' => self::change_idx );
+        
         foreach( range(self::receive_idx,self::change_idx) as $type) {
+            
+            if( $params['type'] != 'both' && $tmap[$params['type']] != $type ) {
+                continue;
+            }
         
             $gap = 0;  // reset gap!
             $batchnum = 1;
@@ -148,7 +155,7 @@ class walletaddrs {
                 $batchsize = $api->service_supports_multiaddr() ? $gap_limit * 2: 1;
                 
                 if( $gen_only ) {
-                    $batchsize = $type == self::receive_idx ? $gen_only['receive'] : $gen_only['change'];
+                    $batchsize = $gen_only;
                 }
                 
                 $end = $batchnum * $batchsize;
