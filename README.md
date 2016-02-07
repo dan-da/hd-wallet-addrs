@@ -239,7 +239,7 @@ transactions only, or both types.
 # Usage
 
 ```
-$ ./hd-wallet-addrs.php 
+$ ./hd-wallet-addrs.php
 
    hd-wallet-addrs.php
 
@@ -260,10 +260,22 @@ $ ./hd-wallet-addrs.php
     
     --gap-limit=<int>    bip32 unused addr gap limit. default=20
     --include-unused     if present, unused addresses in gaps less than
-                         gap limit will be included, or if wallet empty.
+                         gap limit will be included
     
-    --api=<api>          toshi|insight|blockchaindotinfo
+    --gen-only=<n>      will generate n receive addresses and n change addresses
+                          but will not query the blockchain to determine if they
+                          have been used.
+                          
+    --type=<type>       receive|change|both.  default=both
+    
+    --api=<api>          toshi|insight|blockchaindotinfo|roundrobin
                            default = blockchaindotinfo  (fastest)
+                           roundrobin will use a different API for each batch
+                            to improve privacy.  It also sets --batch-size to
+                            1 if set to auto.
+                            
+    --batch-size=<n>    integer|auto   default=auto.
+                          The number of addresses to lookup in each batch.
     
     --cols=<cols>        a csv list of columns, or "all"
                          all:
