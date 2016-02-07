@@ -74,8 +74,8 @@ class blockchain_api_toshi implements blockchain_api {
         
         mylogger()->log( "Retrieving address info from $url", mylogger::debug );
         
-        // Todo:  make more robust with timeout, retries, etc.
-        $buf = @file_get_contents( $url );
+        $result = httputil::http_get( $url );
+        $buf = $result['content'];
         $data = null;
 
         $oracle_raw = $params['oracle-raw'];
@@ -83,15 +83,11 @@ class blockchain_api_toshi implements blockchain_api {
             file_put_contents( $oracle_raw, $buf );
         }
         
-        // note: http_response_header is set by file_get_contents.
-        // next line will throw exception wth code 1001 if response code not found.
-        $server_http_code = httputil::http_response_header_http_code( @$http_response_header );
-        
-        if( $server_http_code == 404 ) {
+        if( $result['response_code'] == 404 ) {
             // toshi returns 404 if address is unused.  so we fake it.
             $data = array('balance' => 0, 'received' => 0, 'sent' => 0);
         }
-        else if( $server_http_code != 200 ) {
+        else if( $result['response_code'] != 200 ) {
             throw new Exception( "Got unexpected response code $server_http_code" );
         }
 
@@ -159,17 +155,13 @@ class blockchain_api_insight  {
         
         mylogger()->log( "Retrieving addresses metadata from $url", mylogger::debug );
         
-        // Todo:  make more robust with timeout, retries, etc.
-        $buf = @file_get_contents( $url );
+        $result = httputil::http_get( $url );
+        $buf = $result['content'];
         
-        // note: http_response_header is set by file_get_contents.
-        // next line will throw exception wth code 1001 if response code not found.
-        $server_http_code = httputil::http_response_header_http_code( @$http_response_header );
-        
-        if( $server_http_code == 404 ) {
+        if( $result['response_code'] == 404 ) {
             return array();
         }
-        else if( $server_http_code != 200 ) {
+        else if( $result['response_code'] != 200 ) {
             throw new Exception( "Got unexpected response code $server_http_code" );
         }
         
@@ -230,17 +222,13 @@ class blockchain_api_blockchaindotinfo  {
         
         mylogger()->log( "Retrieving addresses metadata from $url", mylogger::debug );
         
-        // Todo:  make more robust with timeout, retries, etc.
-        $buf = @file_get_contents( $url );
+        $result = httputil::http_get( $url );
+        $buf = $result['content'];
         
-        // note: http_response_header is set by file_get_contents.
-        // next line will throw exception wth code 1001 if response code not found.
-        $server_http_code = httputil::http_response_header_http_code( @$http_response_header );
-        
-        if( $server_http_code == 404 ) {
+        if( $result['response_code'] == 404 ) {
             return array();
         }
-        else if( $server_http_code != 200 ) {
+        else if( $result['response_code'] != 200 ) {
             throw new Exception( "Got unexpected response code $server_http_code" );
         }
         

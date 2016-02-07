@@ -13,7 +13,7 @@ class httputil {
     static public function http_get($url)
     {
         $content = @file_get_contents ( $url );
-        $code = self::http_response_header_http_code( $http_response_header );
+        $code = self::http_response_header_http_code( @$http_response_header );
     
         return array ('content' => $content,
                       'headers' => $http_response_header,
