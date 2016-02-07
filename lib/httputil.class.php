@@ -3,6 +3,68 @@
 class httputil {
 
     /**
+     *  make an http GET request and return the response content and headers
+     *   @param string $url    url of the requested script
+     *   @return returns a hash array with response content and headers in the following form:
+     *       array ('content'=>'<html></html>',
+     *             'headers'=>array ('HTTP/1.1 200 OK', 'Connection: close', ...)
+     *             )
+     */
+    static public function http_get($url)
+    {
+        $content = @file_get_contents ( $url );
+        $code = self::http_response_header_http_code( $http_response_header );
+    
+        return array ('content' => $content,
+                      'headers' => $http_response_header,
+                      'response_code' => $code);
+    }
+
+    
+    /**
+     *  make an http POST request and return the response content and headers
+     *   @param string $url    url of the requested script
+     *   @param array $data    hash array of request variables
+     *   @return returns a hash array with response content and headers in the following form:
+     *       array ('content'=>'<html></html>',
+     *             'headers'=>array ('HTTP/1.1 200 OK', 'Connection: close', ...)
+     *             )
+     */
+    static public function http_post ($url, $data)
+    {
+        $data_url = http_build_query ($data);
+        return self::http_post_raw( $url, $data_url );
+    }
+
+    /**
+     *  make an http POST request and return the response content and headers
+     *   @param string $url    url of the requested script
+     *   @param string $data   raw data to be sent.
+     *   @return returns a hash array with response content and headers in the following form:
+     *       array ('content'=>'<html></html>',
+     *             'headers'=>array ('HTTP/1.1 200 OK', 'Connection: close', ...)
+     *             )
+     */
+    static public function http_post_raw ($url, $data_raw)
+    {
+        $data_len = strlen ($data_raw);
+        $context = stream_context_create ( array ('http' => array ('method'       => 'POST',
+                                                                   'header'       => "Connection: close\r\nContent-Length: $data_len\r\nContent-Type: application/x-www-form-urlencoded",
+                                                                   'content'      => $data_raw
+                                                                  )
+                                                 )
+                                         );
+    
+        $content = @file_get_contents ($url, false, $context);
+        $code = self::http_response_header_http_code( $http_response_header );
+    
+        return array ('content' => $content,
+                      'headers' => $http_response_header,
+                      'response_code' => $code);
+    }
+    
+    
+    /**
      * Parses the http code from $http_response_header, which is set in local
      * scope after calling file_get_contents($url)
      *
