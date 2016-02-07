@@ -206,7 +206,7 @@ A slightly more technical description of the process:
 # Privacy implications
 
 An important thing to recognize is that unless you are running a toshi or
-insight server locally, the discovery process will send your public address
+insight server locally, the discovery process will send your public addresses
 to a third party.  ie: BlockChain.info, BitPay (insight), or CoinBase (toshi)
 
 The third party will have no way to spend your funds.
@@ -217,6 +217,14 @@ are associated with your IP, or are associated with eachother.
 If that is something you care about, then you should investigate how to run
 toshi or insight locally and use the --toshi or --insight flags to specify
 the local server URL.
+
+There is now a feature that helps to improve privacy when using third-party
+API servers.  The **--api=roundrobin** flag will cycle through the available
+blockchain providers and send individual addresses to each.  In this way, no
+single provider will have access to all the queried wallet addresses.
+
+Querying for individual addresses is slow.  The --batch-size flag may be used
+to increase the number of addresses sent to each provider.  
 
 
 # Use at your own risk.
