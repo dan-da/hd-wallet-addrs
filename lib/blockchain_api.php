@@ -25,6 +25,17 @@ class blockchain_api_factory {
             throw new Exception( "Invalid api provider '$type'" );
         }
     }
+    
+    static public function instance_all() {
+        $types = ['toshi', 'insight', 'blockchaindotinfo'];
+        $instances = [];
+        
+        foreach( $types as $t ) {
+            $instances[] = self::instance( $t );
+        }
+        return $instances;
+    }
+    
 }
 
 /**
@@ -65,6 +76,7 @@ class blockchain_api_toshi implements blockchain_api {
         
         // Todo:  make more robust with timeout, retries, etc.
         $buf = @file_get_contents( $url );
+        $data = null;
 
         $oracle_raw = $params['oracle-raw'];
         if( $oracle_raw ) {
@@ -77,14 +89,17 @@ class blockchain_api_toshi implements blockchain_api {
         
         if( $server_http_code == 404 ) {
             // toshi returns 404 if address is unused.  so we fake it.
-            $info = array('balance' => 0, 'received' => 0, 'sent' => 0);
-            return $this->normalize( $info, $addr );
+            $data = array('balance' => 0, 'received' => 0, 'sent' => 0);
         }
         else if( $server_http_code != 200 ) {
             throw new Exception( "Got unexpected response code $server_http_code" );
         }
-        
-        $data = json_decode( $buf, true );
+
+        mylogger()->log( "Received address info from toshi server.", mylogger::info );
+
+        if( !$data ) {
+            $data = json_decode( $buf, true );
+        }
         
         $oracle_json = $params['oracle-json'];
         if( $oracle_json ) {

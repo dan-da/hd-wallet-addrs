@@ -61,6 +61,7 @@ function get_cli_params() {
                                   'oracle-raw:', 'oracle-json:',
                                   'include-unused',
                                   'gen-only:', 'type:',
+                                  'batch-size:',
                                   'version', 'help',
                                   ) );        
 
@@ -115,6 +116,7 @@ function process_cli_params( $params ) {
     }
     
     $params['gap-limit'] = @$params['gap-limit'] ?: 20;
+    $params['batch-size'] = @$params['batch-size'] ?: 'auto';
     $params['cols'] = get_cols( $params );
     
     $params['min-receive'] = is_numeric( @$params['min-receive'] ) ? $params['min-receive'] : 0;
@@ -183,8 +185,14 @@ function print_help() {
                           
     --type=<type>       receive|change|both.  default=both
     
-    --api=<api>          toshi|insight|blockchaindotinfo
+    --api=<api>          toshi|insight|blockchaindotinfo|roundrobin
                            default = blockchaindotinfo  (fastest)
+                           roundrobin will use a different API for each batch
+                            to improve privacy.  It also sets --batch-size to
+                            1 if set to auto.
+                            
+    --batch-size=<n>    integer|auto   default=auto.
+                          The number of addresses to lookup in each batch.
     
     --cols=<cols>        a csv list of columns, or "all"
                          all:

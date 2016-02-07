@@ -125,7 +125,8 @@ class walletaddrs {
         list($relpath_base, $abspath_base) = $this->get_derivation_paths( $params['derivation'] );
 
         $types = self::addrtypes();
-        $api = blockchain_api_factory::instance( $params['api'] );
+        $apis = $params['api'] == 'roundrobin' ? blockchain_api_factory::instance_all() :
+                                               [ blockchain_api_factory::instance( $params['api'] ) ];
         
         $tmap = array( 'receive' => self::receive_idx,
                        'change' => self::change_idx );
@@ -139,6 +140,7 @@ class walletaddrs {
             $gap = 0;  // reset gap!
             $batchnum = 1;
             while( 1 ) {
+                $api = next( $apis ) ?: reset( $apis );
                 
                 $batch = [];
                 $typename = $types[$type];
@@ -152,8 +154,17 @@ class walletaddrs {
                 // otherwise, set it to 1 to minimize total API calls.
                 // warning:  if secp256k1 extension not installed, addr generation will be slowest factor.
                 // todo: check if extension installed, adjust batch size for multiaddr.
-                $batchsize = $api->service_supports_multiaddr() ? $gap_limit * 2: 1;
-                
+                if( $params['batch-size'] == 'auto' ) {
+                    $batchsize = $api->service_supports_multiaddr() ? $gap_limit * 2: 1;
+                    if( $params['api'] == 'roundrobin' ) {
+                        $batchsize = 1;
+                    }
+                }
+                else {
+                    $batchsize = $params['batch-size'];
+                }
+
+                // gen-only mode uses a single batch.
                 if( $gen_only ) {
                     $batchsize = $gen_only;
                 }
