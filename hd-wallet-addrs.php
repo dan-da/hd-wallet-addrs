@@ -56,6 +56,7 @@ function get_cli_params() {
                                   'gap-limit:',
                                   'logfile:', 'loglevel:',
                                   'toshi:', 'blockchaindotinfo:',
+                                  'blockr:',
                                   'api:', 'insight:',
                                   'list-cols',
                                   'oracle-raw:', 'oracle-json:',
@@ -127,6 +128,7 @@ function process_cli_params( $params ) {
     $params['insight'] = @$params['insight'] ?: 'https://insight.bitpay.com';
     $params['blockchaindotinfo'] = @@$params['blockchaindotinfo'] ?: 'https://blockchain.info';
     $params['toshi'] = @$params['toshi'] ?: 'https://bitcoin.toshi.io';
+    $params['blockr'] = @$params['blockr'] ?: 'https://btc.blockr.io';
 
     $params['format'] = @$params['format'] ?: 'txt';
     $params['cols'] = @$params['cols'] ?: 'all';
@@ -185,7 +187,7 @@ function print_help() {
                           
     --type=<type>       receive|change|both.  default=both
     
-    --api=<api>          toshi|insight|blockchaindotinfo|roundrobin
+    --api=<api>          toshi|insight|blockchaindotinfo|blockr|roundrobin
                            default = blockchaindotinfo  (fastest)
                            roundrobin will use a different API for each batch
                             to improve privacy.  It also sets --batch-size to
@@ -208,7 +210,6 @@ function print_help() {
                          only works when outfile is specified.
                          
     --toshi=<url>       toshi server. defaults to https://bitcoin.toshi.io
-    
     --insight=<url>     insight server. defaults to https://insight.bitpay.com
     
     --oracle-raw=<p>    path to save raw server response, optional.
