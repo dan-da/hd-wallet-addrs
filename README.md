@@ -167,6 +167,18 @@ Found 2 Receive addresses and 2 Change addresses.
 +------------------------------------+---------+----------------+------------+------------+----------------+
 ```
 
+### Warning for users of Copay 1.6.2 and below
+
+Older Copay versions made it possible to generate gaps larger than 20. This is
+because it would generate a new address each time the receive screen was viewed
+and did not respect the standard gap-limit of 20.
+
+Checking only 20 addresses could possibly leave you without discovering funds.
+If you suspect this may be happening, a workaround is to specify a larger gap
+limit such as 100 via the gap-limit argument.
+
+
+
 ## discovering an empty Copay 1.1.x (bip45) 2 of 2 wallet.
 
 Again we must use --derivation=copaylegacy
