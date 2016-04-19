@@ -2,6 +2,9 @@
 
 A command-line tool that performs Bitcoin wallet address discovery.
 
+A web frontend for this tool is available at:
+https://mybitprices.info/hd-wallet-addrs.html
+
 Both regular HD wallets (single address) and multi-sig wallets (eg Copay) are
 supported.
 
