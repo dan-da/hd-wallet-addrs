@@ -125,7 +125,7 @@ function process_cli_params( $params ) {
     
     $params['api'] = @$params['api'] ?: 'blockchaindotinfo';
 
-    $params['insight'] = @$params['insight'] ?: 'https://insight.bitpay.com';
+    $params['insight'] = @$params['insight'] ?: 'https://insight.bitpay.com/api';
     $params['blockchaindotinfo'] = @@$params['blockchaindotinfo'] ?: 'https://blockchain.info';
     $params['toshi'] = @$params['toshi'] ?: 'https://bitcoin.toshi.io';
     $params['blockr'] = @$params['blockr'] ?: 'https://btc.blockr.io';
@@ -210,7 +210,7 @@ function print_help() {
                          only works when outfile is specified.
                          
     --toshi=<url>       toshi server. defaults to https://bitcoin.toshi.io
-    --insight=<url>     insight server. defaults to https://insight.bitpay.com
+    --insight=<url>     insight server. defaults to https://insight.bitpay.com/api
     
     --oracle-raw=<p>    path to save raw server response, optional.
     --oracle-json=<p>   path to save formatted server response, optional.
