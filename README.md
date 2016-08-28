@@ -361,8 +361,16 @@ secp256k1 extension from:
 
 <a href="https://github.com/Bit-Wasp/secp256k1-php">https://github.com/Bit-Wasp/secp256k1-php</a>
 
-note: at present time, this extension sometimes fails to read xpub keys correctly.
-An issue has been filed on the project's github.
+Versions of secp256k1-php after v0.0.7 require PHP7, so if you are using PHP5,
+the install instructions on that page must be modified as follows:
+
+```
+$ cd secp256k1-php/secp256k1
+$ git checkout v0.0.7
+$ phpize && ./configure --with-secp256k1 && make && sudo make install
+```
+
+Note:  on some installations you may need to specify phpize5 instead of phpize.
 
 
 # Blockchain API provider notes.
