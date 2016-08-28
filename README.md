@@ -314,7 +314,8 @@ $ ./hd-wallet-addrs.php
                          only works when outfile is specified.
                          
     --toshi=<url>       toshi server. defaults to https://bitcoin.toshi.io
-    --insight=<url>     insight server. defaults to https://insight.bitpay.com
+    --insight=<url>     insight server. defaults to https://insight.bitpay.com/api
+                        use http://localhost:3001/insight-api for local node
     
     --oracle-raw=<p>    path to save raw server response, optional.
     --oracle-json=<p>   path to save formatted server response, optional.

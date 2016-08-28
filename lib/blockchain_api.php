@@ -150,7 +150,7 @@ class blockchain_api_insight  {
      */
     protected function get_address_info( $addr, $params ) {
         
-        $url_mask = "%s/api/addr/%s/?noTxList=1";
+        $url_mask = "%s/addr/%s/?noTxList=1";
         $url = sprintf( $url_mask, $params['insight'], $addr );
         
         mylogger()->log( "Retrieving addresses metadata from $url", mylogger::debug );
