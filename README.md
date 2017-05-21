@@ -382,19 +382,9 @@ Each API has strengths and weaknesses. Some are faster than others,
 or easier/harder to run locally. The blockchain.info service is recommended
 because it presently has the fastest API, and it is the default.
 
-Ideally for best privacy, there would be an option to run against a local
-instance of bitcoind or btcd, but neither of them provide the necessary API.
+For best privacy, one should query an oracle that is running locally.
+Insight, toshi, and btcd can be operated this way.
 
-Still, for those concerned about privacy, it is possible to run either toshi
-or insight locally yourself, and that is recommended whenever possible.
-
-
-## Toshi
-
-as of 2015-12-30:
-
-* does NOT support multi address lookup in a single call.
-* each candidate address must be queried separately.
 
 ## Insight
 
@@ -422,10 +412,30 @@ as of 2016-02-16:
 
 ## btcd
 
+as of 2017-05-21:
+
+* btcd can now be queried from hd-wallet-addrs to find used wallet addresses, but values for balance/sent/received are empty.
+* does not support multi address lookup, so is not that fast.
+* is probably the simplest way to run a local oracle.
+
 as of 2015-12-30:
 
-* does not provide a suitable API for querying address total_received
-* does have a public address index that should make such an API straight-forward.
+* does not provide a suitable API for querying address total_received or balance.
+* does have a public address index that should make such an API possible, if not performant.
+
+## Toshi
+
+as of 2017-05-21:
+
+* toshi.io no longer exists since Dec 31, 2016.
+* toshi can still be run locally by installing from github.
+* See the Coinbase announcement [here](https://developers.coinbase.com/blog/2016/10/31/sunsetting-toshi).
+
+as of 2015-12-30:
+
+* does NOT support multi address lookup in a single call.
+* each candidate address must be queried separately.
+
 
 ## bitcoind
 
