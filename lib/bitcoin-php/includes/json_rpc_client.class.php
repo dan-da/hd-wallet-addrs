@@ -112,6 +112,7 @@ class json_rpc_client {
         curl_setopt($curl, CURLOPT_USERPWD, $this->username.":".$this->password);
         curl_setopt($curl, CURLOPT_POST, TRUE);
         curl_setopt($curl, CURLOPT_POSTFIELDS, $request);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);  // insecure: this will trust any ssl peer.
         $response = curl_exec($curl);
         curl_close($curl);
         
@@ -190,6 +191,7 @@ class json_rpc_client {
 //        curl_setopt($curl, CURLOPT_USERPWD, $this->username.":".$this->password);
         curl_setopt($curl, CURLOPT_POST, TRUE);
         curl_setopt($curl, CURLOPT_POSTFIELDS, $request);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);  // insecure: this will trust any ssl peer.
         $response = curl_exec($curl);
         curl_close($curl);
 
