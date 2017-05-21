@@ -265,7 +265,7 @@ transactions only, or both types.
 $ ./hd-wallet-addrs.php
 
    hd-wallet-addrs.php
-
+   
    This script discovers bitcoin HD wallet addresses that have been used.
 
    Options:
@@ -291,7 +291,7 @@ $ ./hd-wallet-addrs.php
                           
     --type=<type>       receive|change|both.  default=both
     
-    --api=<api>          toshi|insight|blockchaindotinfo|blockr|roundrobin
+    --api=<api>          toshi|insight|blockchaindotinfo|blockr|btcd|roundrobin
                            default = blockchaindotinfo  (fastest)
                            roundrobin will use a different API for each batch
                             to improve privacy.  It also sets --batch-size to
@@ -315,7 +315,13 @@ $ ./hd-wallet-addrs.php
                          
     --toshi=<url>       toshi server. defaults to https://bitcoin.toshi.io
     --insight=<url>     insight server. defaults to https://insight.bitpay.com/api
-                        use http://localhost:3001/insight-api for local node
+    --blockr=<url>      blockr server.  defaults to https://btc.blockr.io
+    
+    --blockchaindotinfo=<url>
+                        blockchain.info server.  defaults to https://blockchain.info
+    
+    --btcd=<url>        btcd rpc server.  specify as http://user:pass@host:port.  https ok also
+                          btcd does not return balance or total sent/received.
     
     --oracle-raw=<p>    path to save raw server response, optional.
     --oracle-json=<p>   path to save formatted server response, optional.
