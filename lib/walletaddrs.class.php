@@ -206,6 +206,7 @@ class walletaddrs {
                 if( $gen_only ) {
                     foreach( $batch as $addr => $batchinfo ) {
                         $r = ['addr' => $addr,
+                              'used' => false,
                               'total_received' => null,
                               'total_sent' => null,
                               'balance' => null,
@@ -237,7 +238,7 @@ class walletaddrs {
                         $r['relpath'] = $batchinfo['relpath'];
                         $r['abspath'] = $batchinfo['abspath'];
                         $r['xpub'] = $batchinfo['xpub'];
-                        if( $r['total_received'] > 0 || $include_unused ) {
+                        if( $r['used'] || $include_unused ) {
                             $addrs[] = $r;
                         }
                     }
@@ -504,13 +505,13 @@ class walletaddrsreport {
             switch( strtolower($r['type']) ) {
                 case 'receive':
                     $num_receive ++;
-                    if( $r['total_received'] > 0 ) {
+                    if( $r['used'] ) {
                         $num_receive_used ++;
                     }
                     break;
                 case 'change':
                     $num_change ++;
-                    if( $r['total_received'] > 0 ) {
+                    if( $r['used'] ) {
                         $num_change_used ++;
                     }
                     break;

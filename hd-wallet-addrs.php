@@ -56,7 +56,7 @@ function get_cli_params() {
                                   'gap-limit:',
                                   'logfile:', 'loglevel:',
                                   'toshi:', 'blockchaindotinfo:',
-                                  'blockr:',
+                                  'blockr:', 'btcd:',
                                   'api:', 'insight:',
                                   'list-cols',
                                   'oracle-raw:', 'oracle-json:',
@@ -115,6 +115,11 @@ function process_cli_params( $params ) {
     if( count($xpublist) > 1 && !@$params['numsig'] ) {
         throw new Exception( "multisig requires --numsig" );
     }
+
+    // no default url for btcd    
+    if( $params['api'] == 'btcd' && !@$params['btcd'] ) {
+        throw new Exception( "btcd url must be provided in form http://user:pass@host:port.  https ok also");
+    }
     
     $params['gap-limit'] = @$params['gap-limit'] ?: 20;
     $params['batch-size'] = @$params['batch-size'] ?: 'auto';
@@ -126,6 +131,7 @@ function process_cli_params( $params ) {
     $params['api'] = @$params['api'] ?: 'blockchaindotinfo';
 
     $params['insight'] = @$params['insight'] ?: 'https://insight.bitpay.com/api';
+    $params['btcd'] = @$params['btcd'];
     $params['blockchaindotinfo'] = @@$params['blockchaindotinfo'] ?: 'https://blockchain.info';
     $params['toshi'] = @$params['toshi'] ?: 'https://bitcoin.toshi.io';
     $params['blockr'] = @$params['blockr'] ?: 'https://btc.blockr.io';
@@ -187,7 +193,7 @@ function print_help() {
                           
     --type=<type>       receive|change|both.  default=both
     
-    --api=<api>          toshi|insight|blockchaindotinfo|blockr|roundrobin
+    --api=<api>          toshi|insight|blockchaindotinfo|blockr|btcd|roundrobin
                            default = blockchaindotinfo  (fastest)
                            roundrobin will use a different API for each batch
                             to improve privacy.  It also sets --batch-size to
@@ -211,6 +217,13 @@ function print_help() {
                          
     --toshi=<url>       toshi server. defaults to https://bitcoin.toshi.io
     --insight=<url>     insight server. defaults to https://insight.bitpay.com/api
+    --blockr=<url>      blockr server.  defaults to https://btc.blockr.io
+    
+    --blockchaindotinfo=<url>
+                        blockchain.info server.  defaults to https://blockchain.info
+    
+    --btcd=<url>        btcd rpc server.  specify as http://user:pass@host:port.  https ok also
+                          btcd does not return balance or total sent/received.
     
     --oracle-raw=<p>    path to save raw server response, optional.
     --oracle-json=<p>   path to save formatted server response, optional.
