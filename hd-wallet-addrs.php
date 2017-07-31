@@ -116,6 +116,8 @@ function process_cli_params( $params ) {
         throw new Exception( "multisig requires --numsig" );
     }
 
+    $params['api'] = @$params['api'] ?: 'blockchaindotinfo';
+
     // no default url for btcd    
     if( $params['api'] == 'btcd' && !@$params['btcd'] ) {
         throw new Exception( "btcd url must be provided in form http://user:pass@host:port.  https ok also");
@@ -126,9 +128,7 @@ function process_cli_params( $params ) {
     $params['cols'] = get_cols( $params );
     
     $params['min-receive'] = is_numeric( @$params['min-receive'] ) ? $params['min-receive'] : 0;
-    $params['min-change'] = is_numeric( @$params['min-change'] ) ? @$params['min-change'] : 0;
-    
-    $params['api'] = @$params['api'] ?: 'blockchaindotinfo';
+    $params['min-change'] = is_numeric( @$params['min-change'] ) ? @$params['min-change'] : 0;    
 
     $params['insight'] = @$params['insight'] ?: 'https://insight.bitpay.com/api';
     $params['btcd'] = @$params['btcd'];
