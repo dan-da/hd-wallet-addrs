@@ -20,6 +20,30 @@ class httputil {
                       'response_code' => $code);
     }
 
+    static public function http_get_retry($url, $max_retry=3) {
+        
+        $loglines = [];
+        $try = 1;
+        do {
+            try {
+                 
+                $loglines[] = "making get request to $url";
+                $data = self::http_get($url);
+                $response_code = $data['response_code'];
+                $loglines[] = "get request completed with http response code $response_code";
+                $data['log'] = $loglines;
+                return $data;
+            }
+            catch( Exception $e ) {
+                $response_code = 1;
+                $loglines[] = "caught exception during get request.\n   " . $e->getMessage();
+            }
+          sleep(1);
+        } while( $code != 200 && $try++ <= $max_retry );
+
+        throw new Exception( "Max retry of 3 reached.  http get failed.\n\nLog:\n" . implode( "\n", $loglines) );
+    }
+
     
     /**
      *  make an http POST request and return the response content and headers

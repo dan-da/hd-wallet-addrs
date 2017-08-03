@@ -79,7 +79,7 @@ class blockchain_api_toshi implements blockchain_api {
         
         mylogger()->log( "Retrieving address info from $url", mylogger::debug );
         
-        $result = httputil::http_get( $url );
+        $result = httputil::http_get_retry( $url );
         $buf = $result['content'];
         $data = null;
 
@@ -161,7 +161,7 @@ class blockchain_api_insight  {
         
         mylogger()->log( "Retrieving addresses metadata from $url", mylogger::debug );
         
-        $result = httputil::http_get( $url );
+        $result = httputil::http_get_retry( $url );
         $buf = $result['content'];
         
         if( $result['response_code'] == 404 ) {
@@ -308,7 +308,7 @@ class blockchain_api_blockchaindotinfo  {
         
         mylogger()->log( "Retrieving addresses metadata from $url", mylogger::debug );
         
-        $result = httputil::http_get( $url );
+        $result = httputil::http_get_retry( $url );
         $buf = $result['content'];
         
         if( $result['response_code'] == 404 ) {
@@ -407,7 +407,7 @@ class blockchain_api_blockr  {
         
         mylogger()->log( "Retrieving addresses metadata from $url", mylogger::debug );
 
-        $result = httputil::http_get( $url );
+        $result = httputil::http_get_retry( $url );
         $buf = $result['content'];
         
         if( $result['response_code'] == 404 ) {
