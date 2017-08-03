@@ -19,6 +19,7 @@ addresses for accounting purposes.  In particular for use with:
 * <a href="http://github.com/dan-da/bitprices">bitprices</a> - a command line utility for wallet pricing history and cost-based accounting.
 * <a href="http://mybitprices.info">mybitprices.info</a> - an easy-to-use web frontend to bitprices.
 
+See also: [hd-wallet-derive](https://github.com/dan-da/hd-wallet-derive) -- a tool that derives bip32 addresses and private keys.
 
 # Let's see some examples.
 
