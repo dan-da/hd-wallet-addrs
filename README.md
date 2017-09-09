@@ -1,6 +1,11 @@
 # hd-wallet-addrs
 
-A command-line tool that performs Bitcoin wallet address discovery.
+A command-line  tool for finding bitcoin hd-wallet addresses that have received funds.
+
+This tool does two primary things:
+
+1. derive hd-wallet addresses (both change and receive) according to bip32 rules.
+2. examines the blockchain to find the addresses that have actually been used.  (received funds at least once)
 
 A web frontend for this tool is available at:
 https://mybitprices.info/hd-wallet-addrs.html
@@ -12,13 +17,14 @@ Reports are available in json, plaintext, and html.  Columns can be
 changed or re-ordered via command-line.
 
 hd-wallet-addrs is general purpose for anyone needing to discover which addresses
-are actually used in their wallet.
+are actually used in their wallet, including change addresses.
 
 The motivation for building this tool was to simplify extracting used wallet
 addresses for accounting purposes.  In particular for use with:
 * <a href="http://github.com/dan-da/bitprices">bitprices</a> - a command line utility for wallet pricing history and cost-based accounting.
 * <a href="http://mybitprices.info">mybitprices.info</a> - an easy-to-use web frontend to bitprices.
 
+See also: [hd-wallet-derive](https://github.com/dan-da/hd-wallet-derive) -- a tool that derives bip32 addresses and private keys.
 
 # Let's see some examples.
 
