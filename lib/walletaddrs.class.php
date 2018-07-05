@@ -491,7 +491,9 @@ class walletaddrsreport {
         }
         
         foreach( $results as $info ) {
-            fprintf( $fh, "%s\n", $info['addr'] );
+            if( @$info['addr'] ) {
+                fprintf( $fh, "%s\n", $info['addr'] );
+            }
         }
         
         fwrite( $fh, "\n" );
