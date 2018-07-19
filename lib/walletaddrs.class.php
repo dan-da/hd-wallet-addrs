@@ -8,6 +8,9 @@ use \BitWasp\Bitcoin\Address;
 use \BitWasp\Bitcoin\Key\Deterministic\HierarchicalKeyFactory;
 use \BitWasp\Buffertools\Buffer;
 
+// For address generation
+use BitWasp\Bitcoin\Address\AddressCreator;
+
 // For Copay Multisig stuff.
 use \BitWasp\Bitcoin\Mnemonic\Bip39\Bip39SeedGenerator;
 
@@ -184,12 +187,12 @@ class walletaddrs {
                     // fixme: hack for copay/multisig.  maybe should use a callback?
                     if(method_exists($key, 'getPublicKey')) {
                         // bip32 path
-                        $address = $key->getPublicKey()->getAddress()->getAddress();
+                        $address = $this->address($key, $network);
                         $xpub = $key->toExtendedPublicKey($network);
                     }
                     else {
                         // copay/multisig path
-                        $address = $key->getAddress()->getAddress();
+                        $address = $this->address($key, $network);
                         $xpubs = array();
                         foreach($key->getKeys() as $key) {
                             $xpubs[] = $key->toExtendedKey();
@@ -250,6 +253,11 @@ class walletaddrs {
 
         return $addrs;
     }
+    
+    private function address($key, $network) {
+        $addrCreator = new AddressCreator();
+        return $key->getAddress($addrCreator)->getAddress($network);
+    }    
 
     /* Returns relative and absolution bip32 paths based on
      * type metadata ( bip number or app/wallet identifier )

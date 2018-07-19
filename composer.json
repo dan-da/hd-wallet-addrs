@@ -2,7 +2,7 @@
     "name": "dan-da/hd-wallet-addrs",
 
     "require": {
-        "bitwasp/bitcoin": ">=0.0.19 <0.0.35",
+        "bitwasp/bitcoin": "0.0.35",
         "ext-json": "*",
         "php": ">=5.5"
     },
