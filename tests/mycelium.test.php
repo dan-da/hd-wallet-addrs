@@ -22,10 +22,10 @@ class mycelium extends test_base {
         $this->eq( @$data[1]['addr'], '1JYd1RBcL71hvhJxVAZrDiE2YTNMw9sQVm', $col );
 
         $col = 'First Change Address';
-        $this->eq( @$data[2]['addr'], '171ajJyAeY4Qk8hZ3EfwrPEqTEqP6HR2x9', $col );
+        $this->eq( @$data[2]['addr'], '1DKkMD6qskkkkJcHpJZsJtjq61sbFVsvv5', $col );
 
         $col = 'Second Change Address';
-        $this->eq( @$data[3]['addr'], '1Kttmfi4uoLby9PFNqUMDxtNoZYbVqxKxC', $col );
+        $this->eq( @$data[3]['addr'], '19bEUR8a8xynRhPxUi5TAMzQRNF5jaPidS', $col );
 
     }
 

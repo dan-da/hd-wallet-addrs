@@ -28,11 +28,9 @@ class blockonomics extends test_base {
         $this->eq( @$data[2]['addr'], '1BkgqiHcvfnQ2wrPN5D2ycrvZas3nibMjC', $col );
 
         $col = 'Address 4';
-        $this->eq( @$data[3]['addr'], '12SisoiXLUEbkytL5Pzia1jBY8gJP5XN8D', $col );
+        $this->eq( @$data[3]['addr'], '15qkqdGFvBBvd8MHnRM3hhXkfTtEeP4mGP', $col );
 
         $col = 'Address 5';
-        $this->eq( @$data[4]['addr'], '1CkvACVpFwkPnMG13w9kXXE9YcsiyL4pcY', $col );
+        $this->eq( @$data[4]['addr'], '12SisoiXLUEbkytL5Pzia1jBY8gJP5XN8D', $col );
     }
-    
-    
 }
