@@ -13,7 +13,7 @@ class mycelium extends test_base {
         $data = hdwalletaddrscmd::runjson( $args );
         
         $col = 'Number of addresses found.';
-        $this->eq( count($data), 4, $col );   // 2 empty receive + 2 empty change
+        $this->eq( count($data), 11, $col );   // 2 empty receive + 2 empty change
 
         $col = 'First Receive Address';
         $this->eq( @$data[0]['addr'], '137vYfvKUwLnht5217E5vQ3zCp63Fp194A', $col );

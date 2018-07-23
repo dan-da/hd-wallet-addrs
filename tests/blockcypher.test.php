@@ -1,6 +1,6 @@
 <?php
 
-class blockchaindotinfo extends test_base {
+class blockcypher extends test_base {
 
     public function runtests() {
         $this->test1();
@@ -10,7 +10,7 @@ class blockchaindotinfo extends test_base {
         // wallet unknown.
         // obtained from https://blockchain.info/xpub/xpub6CUGRUonZSQ4TWtTMmzXdrXDtypWKiKrhko4egpiMZbpiaQL2jkwSB1icqYh2cfDfVxdx4df189oLKnC5fSwqPfgyP3hooxujYzAu3fDVmz
         $xpub = 'xpub6CUGRUonZSQ4TWtTMmzXdrXDtypWKiKrhko4egpiMZbpiaQL2jkwSB1icqYh2cfDfVxdx4df189oLKnC5fSwqPfgyP3hooxujYzAu3fDVmz';
-        $args = "-g --gap-limit=2  --xpub=$xpub";
+        $args = "-g --gap-limit=2  --api=blockcypher --xpub=$xpub";
         $data = hdwalletaddrscmd::runjson( $args );
         
         $col = 'Number of addresses found.';

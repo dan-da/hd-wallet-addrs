@@ -14,7 +14,7 @@ class insight extends test_base {
         $data = hdwalletaddrscmd::runjson( $args );
         
         $col = 'Number of addresses found.';
-        $this->eq( count($data), 2, $col );
+        $this->eq( count($data), 7, $col );
 
         $firstrow = @$data[0];
 
