@@ -24,7 +24,7 @@ exit(main($argv));
 function main( $argv ) {
     // why limit ourselves?    ;-)
     ini_set('memory_limit', -1 );
-
+    
     try {
         list( $params, $success ) = process_cli_params( get_cli_params( $argv ));
         if( $success != 0 ) {
@@ -57,6 +57,7 @@ function get_cli_params() {
                                   'logfile:', 'loglevel:',
                                   'toshi:', 'blockchaindotinfo:',
                                   'blockr:', 'btcd:',
+                                  'btcdotcom:',
                                   'api:', 'insight:',
                                   'list-cols',
                                   'oracle-raw:', 'oracle-json:',
@@ -133,6 +134,7 @@ function process_cli_params( $params ) {
     $params['insight'] = @$params['insight'] ?: 'https://insight.bitpay.com/api';
     $params['btcd'] = @$params['btcd'];
     $params['blockchaindotinfo'] = @@$params['blockchaindotinfo'] ?: 'https://blockchain.info';
+    $params['btcdotcom'] = @@$params['btcdotcom'] ?: 'https://chain.api.btc.com';
     $params['toshi'] = @$params['toshi'] ?: 'https://bitcoin.toshi.io';
     $params['blockr'] = @$params['blockr'] ?: 'https://btc.blockr.io';
 
@@ -193,7 +195,8 @@ function print_help() {
                           
     --type=<type>       receive|change|both.  default=both
     
-    --api=<api>          toshi|insight|blockchaindotinfo|blockr|btcd|roundrobin
+    --api=<api>          [toshi|insight|blockchaindotinfo|blockr|btcd|
+                          btcdotcom|roundrobin]
                            default = blockchaindotinfo  (fastest)
                            roundrobin will use a different API for each batch
                             to improve privacy.  It also sets --batch-size to
@@ -300,6 +303,7 @@ function get_xpub_list($params, $empty_ok=false) {
 /* Returns true if xpub is valid
  */
 function is_valid_xpub($xpub) {
+    return true;
     // TODO: better validation.
     //  Q: what lengths can xpub be?
     $needle = 'xpub';

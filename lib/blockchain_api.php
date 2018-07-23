@@ -32,7 +32,7 @@ class blockchain_api_factory {
         // note: toshi is excluded because toshi.io is no longer available.
         // note: btcd is excluded because there is no public server and because
         //       it does not provide sent/received/balance figures.
-        $types = ['insight', 'blockchaindotinfo', 'blockr'];
+        $types = ['insight', 'blockchaindotinfo', 'blockr', 'btcdotcom'];
         $instances = [];
         
         foreach( $types as $t ) {
@@ -40,6 +40,18 @@ class blockchain_api_factory {
         }
         return $instances;
     }
+
+    static public function instance_all_multiaddr() {
+        //  only fast oracles that support multiple addresses.
+        $types = ['blockchaindotinfo', 'btcdotcom'];
+        $instances = [];
+        
+        foreach( $types as $t ) {
+            $instances[] = self::instance( $t );
+        }
+        return $instances;
+    }
+
     
 }
 
@@ -283,13 +295,8 @@ class blockchain_api_btcd  {
 
 
 /**
- * An implementation of blockchain_api that uses the insight oracle
- * with single-address support.
- *
- * Supports using any insight host. insight is an open-source project.
- *
- * For info about insight, see:
- *  + https://github.com/bitpay/insight
+ * An implementation of blockchain_api that uses the blockchain.info
+ * oracle with multi-address support.
  */
 class blockchain_api_blockchaindotinfo  {
 
@@ -529,3 +536,84 @@ class btcutil {
 }
 
 
+/**
+ * An implementation of blockchain_api that uses the btc.com
+ * oracle with multi-address support.
+ */
+class blockchain_api_btcdotcom  {
+
+    /* blockchain.info does support multiaddr lookups
+     */
+    public function service_supports_multiaddr() {
+        return true;
+    }
+
+    /* retrieves normalized info for multiple addresses
+     */
+    public function get_addresses_info( $addr_list, $params ) {
+
+        $url_mask = "%s/v3/address/%s";
+        $url = sprintf( $url_mask, $params['btcdotcom'], implode(',', $addr_list ) );
+        
+        mylogger()->log( "Retrieving addresses metadata from $url", mylogger::debug );
+        
+        $result = httputil::http_get_retry( $url );
+        $buf = $result['content'];
+        
+        if( $result['response_code'] == 404 ) {
+            return array();
+        }
+        else if( $result['response_code'] != 200 ) {
+            throw new Exception( "Got unexpected response code " . $result['response_code'] );
+        }
+        
+        mylogger()->log( "Received address info from btcdotcom server.", mylogger::info );
+        
+        $oracle_raw = $params['oracle-raw'];
+        if( $oracle_raw ) {
+            file_put_contents( $oracle_raw, $buf );
+        }        
+        
+        $response = json_decode( $buf, true );
+        $addr_list_r = $response['data'];
+
+        $oracle_json = $params['oracle-json'];
+        if( $oracle_json ) {
+            file_put_contents( $oracle_json, json_encode( $response,  JSON_PRETTY_PRINT ) );
+        }        
+        
+        $map = [];
+        foreach( $addr_list as $i => $addr ) {
+            $info = $addr_list_r[$i];
+            if($info == null) {
+                $info = ['address' => $addr, 'received' => '0', 'sent' => 0, 'balance' => 0];
+            }
+            $normal = $this->normalize_address_info( $info );
+            $addr = $normal['addr'];
+            $map[$addr] = $normal;
+        }
+        
+        // just in case addrs ever come back in different order than we sent them.
+        return $this->ensure_same_order( $addr_list, $map );
+    }
+
+    /* retrieves normalized info for a single address
+     */
+    protected function normalize_address_info( $info ) {
+
+        return array( 'addr' => $info['address'],
+                      'balance' => btcutil::btc_display( $info['balance'] ),
+                      'total_received' => btcutil::btc_display( $info['received'] ),
+                      'total_sent' => btcutil::btc_display( $info['sent'] ),
+                      'used' => $info['received'] > 0,
+                    );
+    }
+    
+    protected function ensure_same_order( $addrs, $response ) {
+        $new_response = array();
+        foreach( $addrs as $addr ) {
+            $new_response[] = $response[$addr];
+        }
+        return $new_response;
+    }
+}
