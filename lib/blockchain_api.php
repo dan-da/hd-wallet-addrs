@@ -34,7 +34,7 @@ class blockchain_api_factory {
         // note: toshi is excluded because toshi.io is no longer available.
         // note: btcd is excluded because there is no public server and because
         //       it does not provide sent/received/balance figures.
-        $types = ['insight', 'blockchaindotinfo', 'blockr', 'btcdotcom'];
+        $types = ['insight', 'blockchaindotinfo', 'btcdotcom'];
         $instances = [];
         
         foreach( $types as $t ) {

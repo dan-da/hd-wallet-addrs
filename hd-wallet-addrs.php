@@ -56,7 +56,7 @@ function get_cli_params() {
                                   'gap-limit:',
                                   'logfile:', 'loglevel:',
                                   'toshi:', 'blockchaindotinfo:',
-                                  'blockr:', 'btcd:',
+                                  'btcd:',
                                   'btcdotcom:',
                                   'api:', 'insight:',
                                   'list-cols',
@@ -136,7 +136,6 @@ function process_cli_params( $params ) {
     $params['blockchaindotinfo'] = @@$params['blockchaindotinfo'] ?: 'https://blockchain.info';
     $params['btcdotcom'] = @@$params['btcdotcom'] ?: 'https://chain.api.btc.com';
     $params['toshi'] = @$params['toshi'] ?: 'https://bitcoin.toshi.io';
-    $params['blockr'] = @$params['blockr'] ?: 'https://btc.blockr.io';
 
     $params['format'] = @$params['format'] ?: 'txt';
     $params['cols'] = @$params['cols'] ?: 'all';
@@ -195,7 +194,7 @@ function print_help() {
                           
     --type=<type>       receive|change|both.  default=both
     
-    --api=<api>          [toshi|insight|blockchaindotinfo|blockr|btcd|
+    --api=<api>          [toshi|insight|blockchaindotinfo|btcd|
                           btcdotcom|roundrobin]
                            default = blockchaindotinfo  (fastest)
                            roundrobin will use a different API for each batch

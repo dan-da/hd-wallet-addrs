@@ -297,7 +297,7 @@ $ ./hd-wallet-addrs.php
                           
     --type=<type>       receive|change|both.  default=both
     
-    --api=<api>          toshi|insight|blockchaindotinfo|blockr|btcd|roundrobin
+    --api=<api>          toshi|insight|blockchaindotinfo|btcd|roundrobin
                            default = blockchaindotinfo  (fastest)
                            roundrobin will use a different API for each batch
                             to improve privacy.  It also sets --batch-size to
@@ -321,7 +321,6 @@ $ ./hd-wallet-addrs.php
                          
     --toshi=<url>       toshi server. defaults to https://bitcoin.toshi.io
     --insight=<url>     insight server. defaults to https://insight.bitpay.com/api
-    --blockr=<url>      blockr server.  defaults to https://btc.blockr.io
     
     --blockchaindotinfo=<url>
                         blockchain.info server.  defaults to https://blockchain.info
@@ -398,6 +397,15 @@ For best privacy, one should query an oracle that is running locally.
 Insight, toshi, and btcd can be operated this way.
 
 
+## btc.com
+
+as of 2018-07-23:
+
+* supports multi address lookup in a single call.
+* max addrs per call: unknown.
+* returns an index with NULL value for any addresses without received funds.
+
+
 ## Insight
 
 as of 2015-12-30:
@@ -410,10 +418,17 @@ as of 2015-12-30:
 as of 2015-12-30:
 
 * supports multi address lookup in a single call.
+* max addrs per call: unknown.
 * returns extra un-needed info such as last 50 tx.
 * returns addresses in different order than requested.
 
 ## blockr.io
+
+as of 2017-09-04:
+
+* Dead.  Killed by Coinbase.com.
+* Read the [obituary](https://www.ccn.com/blockr-io-shuttered-by-coinbase/).
+* R.I.P. blockr
 
 as of 2016-02-16:
 

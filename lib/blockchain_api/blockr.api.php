@@ -1,5 +1,15 @@
 <?php
 
+/****************************************
+ * blockr.io is no longer available.  killed by coinbase.
+ * https://www.ccn.com/blockr-io-shuttered-by-coinbase/
+ *
+ * For now keeping this class in case the API resurfaces
+ * at another URL.
+ *
+ * R.I.P.
+ */
+
 /**
  * An implementation of blockchain_api that uses the blockr.io API
  * with multi-address support.
