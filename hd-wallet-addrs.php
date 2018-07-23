@@ -55,10 +55,13 @@ function get_cli_params() {
                                   'format:', 'cols:',
                                   'gap-limit:',
                                   'logfile:', 'loglevel:',
-                                  'toshi:', 'blockchaindotinfo:',
+                                  'toshi:',
+                                  'blockchaindotinfo:',
                                   'btcd:',
                                   'btcdotcom:',
-                                  'api:', 'insight:',
+                                  'blockcypher:',
+                                  'insight:',
+                                  'api:', 
                                   'list-cols',
                                   'oracle-raw:', 'oracle-json:',
                                   'include-unused',
@@ -135,6 +138,7 @@ function process_cli_params( $params ) {
     $params['btcd'] = @$params['btcd'];
     $params['blockchaindotinfo'] = @@$params['blockchaindotinfo'] ?: 'https://blockchain.info';
     $params['btcdotcom'] = @@$params['btcdotcom'] ?: 'https://chain.api.btc.com';
+    $params['blockcypher'] = @@$params['blockcypher'] ?: 'https://api.blockcypher.com';
     $params['toshi'] = @$params['toshi'] ?: 'https://bitcoin.toshi.io';
 
     $params['format'] = @$params['format'] ?: 'txt';
@@ -218,8 +222,8 @@ function print_help() {
                          only works when outfile is specified.
                          
     --toshi=<url>       toshi server. defaults to https://bitcoin.toshi.io
-    --insight=<url>     insight server. defaults to https://insight.bitpay.com/api
-    --blockr=<url>      blockr server.  defaults to https://btc.blockr.io
+    --insight=<url>     insight server.  defaults to https://insight.bitpay.com/api
+    --blockcypher=<url> blockcypher      defaults to https://api.blockcypher.com
     
     --blockchaindotinfo=<url>
                         blockchain.info server.  defaults to https://blockchain.info

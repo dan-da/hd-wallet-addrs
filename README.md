@@ -405,14 +405,6 @@ as of 2018-07-23:
 * max addrs per call: unknown.
 * returns an index with NULL value for any addresses without received funds.
 
-
-## Insight
-
-as of 2015-12-30:
-
-* does NOT support multi address lookup in a single call.
-* each candidate address must be queried separately.
-
 ## blockchain.info
 
 as of 2015-12-30:
@@ -421,6 +413,22 @@ as of 2015-12-30:
 * max addrs per call: unknown.
 * returns extra un-needed info such as last 50 tx.
 * returns addresses in different order than requested.
+
+## blockcypher.com
+
+as of 2018-07-23:
+
+* does not support multi address lookup in a single call.
+* each candidate address must be queried separately.
+
+
+## Insight
+
+as of 2015-12-30:
+
+* does NOT support multi address lookup in a single call.
+* each candidate address must be queried separately.
+
 
 ## blockr.io
 
