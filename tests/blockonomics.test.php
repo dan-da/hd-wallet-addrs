@@ -13,7 +13,7 @@ class blockonomics extends test_base {
         $data = hdwalletaddrscmd::runjson( $args );
         
         $col = 'Number of addresses found.';
-        $this->eq( count($data), 5, $col );
+        $this->eq( count($data), 7, $col );
         
         // note: for some reason blockonomics is using a different sort order
         //       than we do.
