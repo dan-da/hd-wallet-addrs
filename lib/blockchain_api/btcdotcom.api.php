@@ -9,8 +9,16 @@ class blockchain_api_btcdotcom implements blockchain_api  {
     /* blockchain.info does support multiaddr lookups
      */
     public static function service_supports_multiaddr() {
-        return true;
+        return static::max_batch_size() > 1;
     }
+
+    /* maximum addresses that can be looked up in a single request.
+     */ 
+    public static function max_batch_size() {
+        // unknown.  let's use 1000 so we don't get too crazy.
+        return 1000;
+    }
+    
 
     /* retrieves normalized info for multiple addresses
      */

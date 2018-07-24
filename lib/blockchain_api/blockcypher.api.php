@@ -7,29 +7,30 @@
  */
 class blockchain_api_blockcypher implements blockchain_api {
 
-    /* blockcypher does not presently support multiaddr lookups
+    /* blockcypher does support multiaddr lookups
      */
     public static function service_supports_multiaddr() {
-        return false;
+        return static::max_batch_size() > 1;
+    }
+
+    /* maximum addresses that can be looked up in a single request.
+     */ 
+    public static function max_batch_size() {
+        // note: max items per batch call is 100 at blockcypher.
+        // as per: https://www.blockcypher.com/dev/bitcoin/#batching
+        // however API rate limit restricts this to 3 for the
+        // free API.  See
+        //   https://github.com/blockcypher/explorer/issues/245
+        return 3;
     }
 
     /* retrieves normalized info for multiple addresses
      */
     public function get_addresses_info( $addr_list, $params ) {
-        $addrs = array();
-        foreach( $addr_list as $addr ) {
-            $addrs[] = $this->get_address_info( $addr, $params );;
-        }
-        return $addrs;
-    }
-    
-    /* retrieves normalized info for a single address
-     */
-    protected function get_address_info( $addr, $params ) {
-        
+                
         // https://api.blockcypher.com
         $url_mask = "%s/v1/btc/main/addrs/%s";
-        $url = sprintf( $url_mask, $params['blockcypher'], $addr );
+        $url = sprintf( $url_mask, $params['blockcypher'], implode(';', $addr_list ) );
         
         mylogger()->log( "Retrieving addresses metadata from $url", mylogger::debug );
         
@@ -50,19 +51,26 @@ class blockchain_api_blockcypher implements blockchain_api {
             file_put_contents( $oracle_raw, $buf );
         }        
         
-        $addr_info = json_decode( $buf, true );
+        $addr_list_r = json_decode( $buf, true );
         
         $oracle_json = $params['oracle-json'];
         if( $oracle_json ) {
             file_put_contents( $oracle_json, json_encode( $addr_info,  JSON_PRETTY_PRINT ) );
         }
         
-        return $this->normalize_address_info( $addr_info, $addr );
+        $map = [];
+        foreach( $addr_list_r as $info ) {
+            $normal = $this->normalize_address_info( $info );
+            $addr = $normal['addr'];
+            $map[$addr] = $normal;
+        }
+        
+        return $this->ensure_same_order( $addr_list, $map );
     }
     
     /* normalizes address info to internal app format
      */
-    protected function normalize_address_info( $info, $addr ) {
+    protected function normalize_address_info( $info ) {
 
         return array( 'addr' => $info['address'],
                       'balance' => btcutil::btc_display( $info['balance'] ),
@@ -72,4 +80,11 @@ class blockchain_api_blockcypher implements blockchain_api {
                     );
     }
     
+    protected function ensure_same_order( $addrs, $response ) {
+        $new_response = array();
+        foreach( $addrs as $addr ) {
+            $new_response[] = $response[$addr];
+        }
+        return $new_response;
+    }    
 }

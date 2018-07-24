@@ -418,8 +418,13 @@ as of 2015-12-30:
 
 as of 2018-07-23:
 
-* does not support multi address lookup in a single call.
-* each candidate address must be queried separately.
+* does support multi address lookup in a single call via batching.
+* max addrs per batched call is 100.  however:
+* each address is counted as a request internally, and more than
+3 triggers the rate limiting, so the request fails.  Thus, 100
+can only be achieved with an API key, and the limit for free
+usage is effectively 3.
+* See https://github.com/blockcypher/explorer/issues/245
 
 
 ## Insight

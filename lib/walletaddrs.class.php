@@ -151,22 +151,30 @@ class walletaddrs {
                 mylogger()->log($msg, mylogger::info);
 
                 // Goal: reduce number of API calls and increase performance.
-                // if the api supports multiaddr lookups then we set batchsize to double the gap limit.
+                // if the api supports multiaddr lookups then we set batchsize to double the gap limit or max supported by api.
                 //    note: doubling is disabled until secp256kp1 extension passes all test cases.
                 //          because key generation is so slooooow without it.
                 // otherwise, set it to 1 to minimize total API calls.
                 // warning:  if secp256k1 extension not installed, addr generation will be slowest factor.
                 // todo: check if extension installed, adjust batch size for multiaddr.
+                $maxbatch = $api->max_batch_size();
                 if( $params['batch-size'] == 'auto' ) {
                     $batchsize = $api->service_supports_multiaddr() ? $gap_limit * 2: 1;
+                    $batchsize = $batchsize > $maxbatch ? $maxbatch : $batchsize;
                     if( $params['api'] == 'roundrobin' ) {
                         $batchsize = 1;
                     }
                 }
                 else {
                     $batchsize = $params['batch-size'];
+                
+                    // ensure batchsize is not greater than api max batch.
+                    if( $batchsize > $maxbatch ) {
+                        mylogger()->log( sprintf("Requested batch size %d exceeds API max. reducing to %d", $batchsize, $maxbatch), mylogger::warning );
+                        $batchsize = $maxbatch;
+                    }
                 }
-
+                
                 // gen-only mode uses a single batch.
                 if( $gen_only ) {
                     $batchsize = $gen_only;

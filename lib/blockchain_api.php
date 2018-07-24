@@ -10,6 +10,8 @@ require_once __DIR__ . '/bitcoin-php/bitcoin.inc';  // needed for btcd json-rpc 
 interface blockchain_api {
     public static function service_supports_multiaddr();
     
+    public static function max_batch_size();
+    
     // interface requirement: returned addresses must be in same order as args.
     public function get_addresses_info( $addr_list, $params );
 }
