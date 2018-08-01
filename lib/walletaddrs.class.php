@@ -8,6 +8,15 @@ use \BitWasp\Bitcoin\Address;
 use \BitWasp\Bitcoin\Key\Deterministic\HierarchicalKeyFactory;
 use \BitWasp\Buffertools\Buffer;
 
+// For ypub/zpub support
+use BitWasp\Bitcoin\Key\Deterministic\HdPrefix\GlobalPrefixConfig;
+use BitWasp\Bitcoin\Key\Deterministic\HdPrefix\NetworkConfig;
+use BitWasp\Bitcoin\Key\Deterministic\Slip132\Slip132;
+use BitWasp\Bitcoin\Key\KeyToScript\KeyToScriptHelper;
+use BitWasp\Bitcoin\Serializer\Key\HierarchicalKey\Base58ExtendedKeySerializer;
+use BitWasp\Bitcoin\Serializer\Key\HierarchicalKey\ExtendedKeySerializer;
+use BitWasp\Bitcoin\Network\Slip132\BitcoinRegistry;
+
 // For address generation
 use BitWasp\Bitcoin\Address\AddressCreator;
 
@@ -70,10 +79,18 @@ class walletaddrs {
      * a multsig HD wallet.  ( eg, Copay )
      */
     protected function discover_wallet_addrs_multisig($xpub_list) {
-        
+
+        $key_types = [];
+        $kt = null;
         foreach( $xpub_list as $pk ) {
-            $k[] = HierarchicalKeyFactory::fromExtended($pk, Bitcoin::getNetwork() );
+            $k[] = $this->fromExtendedKey($pk, Bitcoin::getNetwork() );
+            $kt = $this->keyTypeFromSerializedKey($pk);
+            $key_types[$kt] = 1;
         }
+        
+        if(count($key_types) > 1) {
+            throw new Exception("Cannot mix key types");
+        }        
         
         $params = $this->get_params();
         $num_signers = $params['numsig'];
@@ -82,7 +99,7 @@ class walletaddrs {
         $sequences = new \BitWasp\Bitcoin\Key\Deterministic\HierarchicalKeySequence($ec->getMath());
         $hd = new \BitWasp\Bitcoin\Key\Deterministic\MultisigHD($num_signers, 'm/44', $k, $sequences, true);
         
-        return $this->discover_addrs($hd);
+        return $this->discover_addrs($hd, $is_multi=true, $kt);
     }
 
     /* Returns a map of address types.
@@ -91,6 +108,53 @@ class walletaddrs {
         return [self::receive_idx => 'Receive', self::change_idx => 'Change'];
     }
 
+    // key_type is one of x,y,Y,z,Z
+    private function getScriptPrefixForKeyType($key_type) {
+        $adapter = Bitcoin::getEcAdapter();
+        $slip132 = new Slip132(new KeyToScriptHelper($adapter));
+        $coinPrefixes = new BitcoinRegistry();
+        
+        switch( $key_type ) {
+            case 'x': $prefix = $slip132->p2pkh($coinPrefixes); break;
+            case 'X': $prefix = $slip132->p2shP2pkh($coinPrefixes); break;  // also xpub.  this case won't work.
+            case 'y': $prefix = $slip132->p2shP2wpkh($coinPrefixes); break;
+            case 'Y': $prefix = $slip132->p2shP2wshP2pkh($coinPrefixes); break;
+            case 'z': $prefix = $slip132->p2wpkh($coinPrefixes); break;
+            case 'Z': $prefix = $slip132->p2wshP2pkh($coinPrefixes); break;
+            default:
+                throw new Exception("Unknown key type: $key_type");
+        }
+        
+        return $prefix;
+    }
+    
+    
+    private function getSerializer($network, $key_type) {
+        $adapter = Bitcoin::getEcAdapter();
+
+        $prefix = $this->getScriptPrefixForKeyType($key_type);
+        $config = new GlobalPrefixConfig([new NetworkConfig($network, [$prefix]),]);
+        
+        $serializer = new Base58ExtendedKeySerializer(new ExtendedKeySerializer($adapter, $config));
+        return $serializer;
+    }
+    
+    private function keyTypeFromSerializedKey($key_buf) {
+        return @$key_buf[0];
+    }
+    
+    private function fromExtendedKey($key_buf, $network) {
+        $key_type = $this->keyTypeFromSerializedKey($key_buf);
+        $serializer = $this->getSerializer($network, $key_type);
+        return $serializer->parse($network, $key_buf);
+    }
+
+    private function toExtendedKey($key, $network, $key_type) {
+        $serializer = $this->getSerializer($network, $key_type);
+        return $serializer->serialize($network, $key);
+    }    
+
+    
     /* Discovers receive and change addresses for a master xpub from
      * a regular HD wallet.  ( not multisig )
      */
@@ -101,7 +165,8 @@ class walletaddrs {
         $network = Bitcoin::getNetwork();
 
         //$x_pub_key = '1LSedCD6AFWJaZXF2qR8jZobaGx3jN6akv';
-        $master = HierarchicalKeyFactory::fromExtended($x_pub_key, $network);
+        $master = $this->fromExtendedKey($x_pub_key, $network);
+        $key_type = $this->keyTypeFromSerializedKey($x_pub_key);
 
         /*        
         echo "Master Public Key (m)\n";
@@ -110,12 +175,12 @@ class walletaddrs {
         echo sprintf( "   depth: %s, sequence: %s\n\n", $master->getDepth(), $master->getSequence() );
         */
         
-        return $this->discover_addrs( $master );
+        return $this->discover_addrs( $master, $is_multi=false, $key_type );
     }
 
     /* Discovers receive and change addresses for a given xpub key.
      */
-    protected function discover_addrs( $xpub ) {
+    protected function discover_addrs( $xpub, $is_multi, $key_type ) {
         $master = $xpub;
 
         $params = $this->get_params();
@@ -124,7 +189,7 @@ class walletaddrs {
         $include_unused = $params['include-unused'];
         $network = Bitcoin::getNetwork();
         $gen_only = @$params['gen-only'];
-        
+                
         list($relpath_base, $abspath_base) = $this->get_derivation_paths( $params['derivation'] );
 
         $types = self::addrtypes();
@@ -193,17 +258,17 @@ class walletaddrs {
                     $key = $master->derivePath($relpath);
                     
                     // fixme: hack for copay/multisig.  maybe should use a callback?
-                    if(method_exists($key, 'getPublicKey')) {
+                    if(!$is_multi) {
                         // bip32 path
                         $address = $this->address($key, $network);
-                        $xpub = $key->toExtendedPublicKey($network);
+                        $xpub = $this->toExtendedKey($key->withoutPrivateKey(), $network, $key_type);
                     }
                     else {
                         // copay/multisig path
                         $address = $this->address($key, $network);
                         $xpubs = array();
                         foreach($key->getKeys() as $key) {
-                            $xpubs[] = $key->toExtendedKey();
+                            $xpubs[] = $this->toExtendedKey($key->withoutPrivateKey(), $network, $key_type);
                         }
                         // note: encoding multiple xpub as csv string in same field.
                         $xpub = implode(',', $xpubs);
