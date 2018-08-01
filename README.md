@@ -13,6 +13,9 @@ https://mybitprices.info/hd-wallet-addrs.html
 Both regular HD wallets (single address) and multi-sig wallets (eg Copay) are
 supported.
 
+Segwit addresses are generated if a ypub or zpub key is provided.
+(ypub: segwit-p2sh, zpub: bech32)
+
 Reports are available in json, plaintext, and html.  Columns can be
 changed or re-ordered via command-line.
 
