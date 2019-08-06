@@ -1,6 +1,6 @@
 <?php
 
-class insight extends test_base {
+class esplora extends test_base {
 
     public function runtests() {
         $this->test1();
@@ -10,7 +10,7 @@ class insight extends test_base {
         // wallet unknown.
         // obtained from https://blockchain.info/xpub/xpub6CUGRUonZSQ4TWtTMmzXdrXDtypWKiKrhko4egpiMZbpiaQL2jkwSB1icqYh2cfDfVxdx4df189oLKnC5fSwqPfgyP3hooxujYzAu3fDVmz
         $xpub = 'xpub6CUGRUonZSQ4TWtTMmzXdrXDtypWKiKrhko4egpiMZbpiaQL2jkwSB1icqYh2cfDfVxdx4df189oLKnC5fSwqPfgyP3hooxujYzAu3fDVmz';
-        $args = "-g --api=insight --gap-limit=2  --xpub=$xpub";
+        $args = "-g --api=esplora --gap-limit=2  --xpub=$xpub";
         $data = hdwalletaddrscmd::runjson( $args );
         
         $col = 'Number of addresses found.';

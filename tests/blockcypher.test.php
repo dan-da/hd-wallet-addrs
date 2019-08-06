@@ -14,7 +14,7 @@ class blockcypher extends test_base {
         $data = hdwalletaddrscmd::runjson( $args );
         
         $col = 'Number of addresses found.';
-        $this->eq( count($data), 7, $col );
+        $this->eq( count($data), 10, $col );
 
         $firstrow = @$data[0];
 
