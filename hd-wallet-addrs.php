@@ -24,7 +24,7 @@ exit(main($argv));
 function main( $argv ) {
     // why limit ourselves?    ;-)
     ini_set('memory_limit', -1 );
-    
+
     try {
         list( $params, $success ) = process_cli_params( get_cli_params( $argv ));
         if( $success != 0 ) {
@@ -36,7 +36,7 @@ function main( $argv ) {
     }
     catch( Exception $e ) {
         mylogger()->log_exception( $e );
-        
+
         // print validation errors to stderr.
         if( $e->getCode() == 2 ) {
             fprintf( STDERR, $e->getMessage() . "\n\n" );
@@ -61,14 +61,14 @@ function get_cli_params() {
                                   'btcdotcom:',
                                   'blockcypher:',
                                   'insight:',
-                                  'api:', 
+                                  'api:',
                                   'list-cols',
                                   'oracle-raw:', 'oracle-json:',
                                   'include-unused',
                                   'gen-only:', 'type:',
                                   'batch-size:',
                                   'version', 'help',
-                                  ) );        
+                                  ) );
 
     return $params;
 }
@@ -78,7 +78,7 @@ function get_cli_params() {
  */
 function process_cli_params( $params ) {
     $success = 0;   // 0 == success.
-    
+
     if( isset( $params['version'] ) ) {
         print_version();
         return [$params, 2];
@@ -87,8 +87,8 @@ function process_cli_params( $params ) {
         print_help();
         return [$params, 1];
     }
-    
-    
+
+
     if( @$params['logfile'] ) {
         mylogger()->set_log_file( $params['logfile'] );
         mylogger()->echo_log = false;
@@ -98,44 +98,44 @@ function process_cli_params( $params ) {
     mylogger()->set_log_level_by_name( $loglevel );
 
     $xpublist = get_xpub_list( $params, $empty_ok = true );
-    
+
     $params['derivation'] = @$params['derivation'] ?: 'relative';
     $params['include-unused'] = isset($params['include-unused']) ? true : false;
-    
+
     $params['multisig'] = count($xpublist) > 1;
-    
+
     // legacy copay used multisig even for 1 of 1 wallets.
     if( $params['derivation'] == 'copaylegacy' ) {
         $params['multisig'] = true;
         // if numsig is missing for 1of1 then we set it to 1.
         $params['numsig'] = @$params['numsig'] ?: (count($xpublist)==1 ? 1 : null);
     }
-    
+
     $params['gen-only'] = is_numeric( @$params['gen-only'] ) ? $params['gen-only'] : null;
-    
+
     $types = array( 'receive', 'change', 'both');
     $params['type'] = in_array( @$params['type'], $types ) ? $params['type'] : 'both';
-    
+
     if( count($xpublist) > 1 && !@$params['numsig'] ) {
         throw new Exception( "multisig requires --numsig" );
     }
 
     $params['api'] = @$params['api'] ?: 'blockchaindotinfo';
 
-    // no default url for btcd    
+    // no default url for btcd
     if( $params['api'] == 'btcd' && !@$params['btcd'] ) {
         throw new Exception( "btcd url must be provided in form http://user:pass@host:port.  https ok also");
     }
-    
+
     $params['gap-limit'] = @$params['gap-limit'] ?: 20;
     $params['batch-size'] = @$params['batch-size'] ?: 'auto';
     $params['cols'] = get_cols( $params );
-    
+
     $params['min-receive'] = is_numeric( @$params['min-receive'] ) ? $params['min-receive'] : 0;
-    $params['min-change'] = is_numeric( @$params['min-change'] ) ? @$params['min-change'] : 0;    
+    $params['min-change'] = is_numeric( @$params['min-change'] ) ? @$params['min-change'] : 0;
 
     $params['insight'] = @$params['insight'] ?: 'https://insight.bitpay.com/api';
-    $params['blockstreamdotinfo'] = @$params['blockstreamdotinfo'] ?: 'https://blockstream.info/api';
+    $params['esplora'] = @$params['esplora'] ?: 'https://blockstream.info/api';
     $params['btcd'] = @$params['btcd'];
     $params['blockchaindotinfo'] = @@$params['blockchaindotinfo'] ?: 'https://blockchain.info';
     $params['btcdotcom'] = @@$params['btcdotcom'] ?: 'https://chain.api.btc.com';
@@ -147,7 +147,7 @@ function process_cli_params( $params ) {
 
     $params['oracle-raw'] = @$params['oracle-raw'] ?: null;
     $params['oracle-json'] = @$params['oracle-json'] ?: null;
-    
+
     return [$params, $success];
 }
 
@@ -163,13 +163,13 @@ function print_version() {
 /* prints CLI help text
  */
 function print_help() {
-    
+
     $levels = mylogger()->get_level_map();
     $allcols = implode(',', walletaddrs::all_cols() );
     $defaultcols = implode(',', walletaddrs::default_cols() );
-    
+
     $loglevels = implode(',', array_values( $levels ));
-     
+
     $buf = <<< END
 
    hd-wallet-addrs.php
@@ -179,7 +179,7 @@ function print_help() {
    Options:
 
     -g                   go!  ( required )
-    
+
     --xpub=<csv>         comma separated list of xpub keys
     --xpubfile=<path>    file containing xpub keys, one per line.
                            note: multiple keys implies multisig m of n.
@@ -188,27 +188,27 @@ function print_help() {
                            default=relative
     --numsig=<int>       number of required signers for m-of-n multisig wallet.
                            (required for multisig)
-    
+
     --gap-limit=<int>    bip32 unused addr gap limit. default=20
     --include-unused     if present, unused addresses in gaps less than
                          gap limit will be included
-    
+
     --gen-only=<n>      will generate n receive addresses and n change addresses
                           but will not query the blockchain to determine if they
                           have been used.
-                          
+
     --type=<type>       receive|change|both.  default=both
-    
+
     --api=<api>          [toshi|insight|blockchaindotinfo|btcd|
                           btcdotcom|roundrobin]
                            default = blockchaindotinfo  (fastest)
                            roundrobin will use a different API for each batch
                             to improve privacy.  It also sets --batch-size to
                             1 if set to auto.
-                            
+
     --batch-size=<n>    integer|auto   default=auto.
                           The number of addresses to lookup in each batch.
-    
+
     --cols=<cols>        a csv list of columns, or "all"
                          all:
                           ($allcols)
@@ -217,43 +217,43 @@ function print_help() {
 
     --outfile=<path>     specify output file path.
     --format=<format>    txt|csv|json|jsonpretty|html|addrlist|all   default=txt
-    
+
                          if all is specified then a file will be created
                          for each format with appropriate extension.
                          only works when outfile is specified.
-                         
+
     --toshi=<url>       toshi server. defaults to https://bitcoin.toshi.io
     --insight=<url>     insight server.  defaults to https://insight.bitpay.com/api
     --blockcypher=<url> blockcypher      defaults to https://api.blockcypher.com
-    
+
     --blockchaindotinfo=<url>
                         blockchain.info server.  defaults to https://blockchain.info
-    
+
     --btcd=<url>        btcd rpc server.  specify as http://user:pass@host:port.  https ok also
                           btcd does not return balance or total sent/received.
-    
+
     --oracle-raw=<p>    path to save raw server response, optional.
     --oracle-json=<p>   path to save formatted server response, optional.
-    
+
     --logfile=<file>    path to logfile. if not present logs to stdout.
     --loglevel=<level>  $loglevels
                           default = info
-    
+
 
 
 END;
 
-   fprintf( STDERR, $buf );       
-        
+   fprintf( STDERR, $buf );
+
 }
 
 /* parses the --cols argument and returns an array of columns.
  */
 function get_cols( $params ) {
     $arg = strip_whitespace( @$params['cols'] ?: null );
-    
+
     $allcols = walletaddrs::all_cols();
-    
+
     if( $arg == 'all' ) {
         $cols = $allcols;
     }
@@ -277,7 +277,7 @@ function get_cols( $params ) {
  * --xpub arg or the --xpubfile arg.
  */
 function get_xpub_list($params, $empty_ok=false) {
-    
+
     $list = array();
     if( @$params['xpub'] ) {
         $list = explode( ',', strip_whitespace( $params['xpub'] ) );

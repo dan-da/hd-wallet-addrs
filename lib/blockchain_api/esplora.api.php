@@ -1,7 +1,7 @@
 <?php
 
 /**
- * An implementation of blockchain_api that uses the insight oracle
+ * An implementation of blockchain_api that uses the blockstream.info esplora oracle
  * with single-address support.
  *
  * Supports using any blockstream.info host. Blockstream Esplora is an open-source project.
@@ -9,9 +9,9 @@
  * For info about Esplora, see:
  *  + https://github.com/Blockstream/esplora
  */
-class blockchain_api_blockstreamdotinfo implements blockchain_api {
+class blockchain_api_esplora implements blockchain_api {
 
-    /* insight does not presently support multiaddr lookups
+    /* esplora does not presently support multiaddr lookups
      */
     public static function service_supports_multiaddr() {
         return static::max_batch_size() > 1;
@@ -40,7 +40,7 @@ class blockchain_api_blockstreamdotinfo implements blockchain_api {
     protected function get_address_info( $addr, $params ) {
 
         $url_mask = "%s/address/%s";
-        $url = sprintf( $url_mask, $params['blockstreamdotinfo'], $addr );
+        $url = sprintf( $url_mask, $params['esplora'], $addr );
 
         mylogger()->log( "Retrieving addresses metadata from $url", mylogger::debug );
 
@@ -54,7 +54,7 @@ class blockchain_api_blockstreamdotinfo implements blockchain_api {
             throw new Exception( "Got unexpected response code " . $result['response_code'] );
         }
 
-        mylogger()->log( "Received address info from blockstram.info server.", mylogger::info );
+        mylogger()->log( "Received address info from Esplora server.", mylogger::info );
 
         $oracle_raw = $params['oracle-raw'];
         if( $oracle_raw ) {
