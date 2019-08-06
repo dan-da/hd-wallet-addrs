@@ -135,6 +135,7 @@ function process_cli_params( $params ) {
     $params['min-change'] = is_numeric( @$params['min-change'] ) ? @$params['min-change'] : 0;    
 
     $params['insight'] = @$params['insight'] ?: 'https://insight.bitpay.com/api';
+    $params['blockstreamdotinfo'] = @$params['blockstreamdotinfo'] ?: 'https://blockstream.info/api';
     $params['btcd'] = @$params['btcd'];
     $params['blockchaindotinfo'] = @@$params['blockchaindotinfo'] ?: 'https://blockchain.info';
     $params['btcdotcom'] = @@$params['btcdotcom'] ?: 'https://chain.api.btc.com';
