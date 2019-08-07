@@ -397,10 +397,14 @@ or easier/harder to run locally. The blockchain.info service is recommended
 because it presently has the fastest API, and it is the default.
 
 For best privacy, one should query an oracle that is running locally.
-Insight, toshi, and btcd can be operated this way.
+Esplora, Insight, toshi, and btcd can be operated this way.
 
 
-## btc.com
+## [btc.com](https://btc.com/api-doc)
+
+as of 2019-08-06
+
+* API is returning 403 forbidden error except when requested via web browser.  ymmv.
 
 as of 2018-07-23:
 
@@ -408,7 +412,21 @@ as of 2018-07-23:
 * max addrs per call: unknown.
 * returns an index with NULL value for any addresses without received funds.
 
-## blockchain.info
+## [bitcoin-core](https://github.com/bitcoin/bitcoin)
+
+as of 2019-08-06:
+
+* still does not support address index or API.
+* There is a chance [this pull request](https://github.com/bitcoin/bitcoin/pull/14053) might get merged.
+
+as of 2015-12-30:
+
+* does not provide a suitable API for querying address total_received
+* does not have a public address index.  Implementing an API would be difficult.
+* some 3rd party party patches or external solutions exist for creating an address index.
+* not supported by hd-wallet-addrs (sadly).
+
+## [blockchain.info](https://www.blockchain.com/api/blockchain_api)
 
 as of 2015-12-30:
 
@@ -417,7 +435,7 @@ as of 2015-12-30:
 * returns extra un-needed info such as last 50 tx.
 * returns addresses in different order than requested.
 
-## blockcypher.com
+## [blockcypher.com](https://www.blockcypher.com/dev/bitcoin/)
 
 as of 2018-07-23:
 
@@ -429,8 +447,19 @@ can only be achieved with an API key, and the limit for free
 usage is effectively 3.
 * See https://github.com/blockcypher/explorer/issues/245
 
+## [esplora](https://github.com/Blockstream/esplora) (by blockstream.info)
 
-## Insight
+as of 2019-08-06:
+
+* does NOT support multi address lookup in a single call.  [feature requested](https://github.com/Blockstream/esplora/issues/27).
+* open source, can be run locally.
+
+## [Insight](https://github.com/bitpay/insight)
+
+as of 2019-08-06
+
+* [project page](https://github.com/bitpay/insight) states insight has been replaced by [bitcore-node](https://github.com/bitpay/bitcore)
+* insight [public API](https://insight.bitpay.com/api) is still working.
 
 as of 2015-12-30:
 
@@ -453,20 +482,25 @@ as of 2016-02-16:
 * does not return un-needed tx data.
 
 
-## btcd
+## [btcd](https://github.com/btcsuite/btcd)
 
 as of 2017-05-21:
 
 * btcd can now be queried from hd-wallet-addrs to find used wallet addresses, but values for balance/sent/received are empty.
 * does not support multi address lookup, so is not that fast.
 * is probably the simplest way to run a local oracle.
+* See [this issue](https://github.com/btcsuite/btcd/issues/949).
 
 as of 2015-12-30:
 
 * does not provide a suitable API for querying address total_received or balance.
 * does have a public address index that should make such an API possible, if not performant.
 
-## Toshi
+## [Toshi](https://github.com/martindale/toshi)
+
+as of 2019-08-06:
+
+* coinbase/toshi [project page](https://github.com/coinbase/toshi/) not found on github.  Maybe try [here](https://github.com/martindale/toshi).
 
 as of 2017-05-21:
 
@@ -479,13 +513,6 @@ as of 2015-12-30:
 * does NOT support multi address lookup in a single call.
 * each candidate address must be queried separately.
 
-
-## bitcoind
-
-as of 2015-12-30:
-
-* does not provide a suitable API for querying address total_received
-* does not have a public address index.  Implementing an API would be difficult.
 
 # Thanks
 
