@@ -61,6 +61,7 @@ function get_cli_params() {
                                   'btcdotcom:',
                                   'blockcypher:',
                                   'insight:',
+                                  'esplora:',
                                   'api:', 
                                   'list-cols',
                                   'oracle-raw:', 'oracle-json:',
