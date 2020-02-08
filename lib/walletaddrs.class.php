@@ -282,7 +282,8 @@ class walletaddrs {
                 if( $gen_only ) {
                     foreach( $batch as $addr => $batchinfo ) {
                         $r = ['addr' => $addr,
-                              'used' => false,
+                              'used' => null,
+                              'status' => null,
                               'total_received' => null,
                               'total_sent' => null,
                               'balance' => null,
@@ -314,6 +315,7 @@ class walletaddrs {
                         $r['relpath'] = $batchinfo['relpath'];
                         $r['abspath'] = $batchinfo['abspath'];
                         $r['xpub'] = $batchinfo['xpub'];
+                        $r['status'] = $r['used'] ? 'used' : 'unused';
                         if( $r['used'] || $include_unused ) {
                             $addrs[] = $r;
                         }
@@ -369,13 +371,13 @@ class walletaddrs {
     /* Returns all columns available for reports
      */
     static public function all_cols() {
-        return ['addr', 'type', 'total_received', 'total_sent', 'balance', 'relpath', 'abspath', 'xpub'];
+        return ['addr', 'type', 'total_received', 'total_sent', 'balance', 'relpath', 'abspath', 'xpub', 'status'];
     }
 
     /* Returns default reporting columns
      */
     static public function default_cols() {
-        return ['addr', 'type', 'total_received', 'total_sent', 'balance', 'relpath'];
+        return ['addr', 'type', 'total_received', 'total_sent', 'balance', 'relpath', 'status'];
     }
 
     static public function default_cols_gen_only() {
