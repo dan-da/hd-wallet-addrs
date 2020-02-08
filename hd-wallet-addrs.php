@@ -85,7 +85,7 @@ function process_cli_params( $params ) {
         return [$params, 2];
     }
     if( isset( $params['help']) || !isset($params['g']) ) {
-        print_help();
+        print_help(false);
         return [$params, 1];
     }
     
@@ -163,7 +163,7 @@ function print_version() {
 
 /* prints CLI help text
  */
-function print_help() {
+function print_help($stderr = true) {
     
     $levels = mylogger()->get_level_map();
     $allcols = implode(',', walletaddrs::all_cols() );
@@ -244,7 +244,7 @@ function print_help() {
 
 END;
 
-   fprintf( STDERR, $buf );       
+   fprintf( $stderr ? STDERR : STDOUT, $buf );
         
 }
 
