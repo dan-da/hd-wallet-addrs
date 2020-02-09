@@ -15,8 +15,8 @@ class blockchain_api_blockchaindotinfo implements blockchain_api {
     /* maximum addresses that can be looked up in a single request.
      */ 
     public static function max_batch_size() {
-        // limit unknown.  let's use 1000.
-        return 1000;
+        // appears to be 100, as of 2020-02-08
+        return 100;
     }
     
     /* retrieves normalized info for multiple addresses
