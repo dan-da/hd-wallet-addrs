@@ -182,11 +182,10 @@ class walletaddrs {
      */
     protected function discover_addrs( $xpub, $is_multi, $key_type ) {
         $master = $xpub;
-
         $params = $this->get_params();
         $addrs = array();      // filtered addrs.
         $gap_limit = $params['gap-limit'];
-        $include_unused = $params['include-unused'];
+        $include = $params['include'];
         $network = Bitcoin::getNetwork();
         $gen_only = @$params['gen-only'];
                 
@@ -216,15 +215,14 @@ class walletaddrs {
                 mylogger()->log($msg, mylogger::info);
 
                 // Goal: reduce number of API calls and increase performance.
-                // if the api supports multiaddr lookups then we set batchsize to double the gap limit or max supported by api.
-                //    note: doubling is disabled until secp256kp1 extension passes all test cases.
-                //          because key generation is so slooooow without it.
+                // if the api supports multiaddr lookups then we set batchsize to the gap limit or max supported by api.
+                //
                 // otherwise, set it to 1 to minimize total API calls.
                 // warning:  if secp256k1 extension not installed, addr generation will be slowest factor.
                 // todo: check if extension installed, adjust batch size for multiaddr.
                 $maxbatch = $api->max_batch_size();
                 if( $params['batch-size'] == 'auto' ) {
-                    $batchsize = $api->service_supports_multiaddr() ? $gap_limit * 2: 1;
+                    $batchsize = $api->service_supports_multiaddr() ? $gap_limit : 1;
                     $batchsize = $batchsize > $maxbatch ? $maxbatch : $batchsize;
                     if( $params['api'] == 'roundrobin' ) {
                         $batchsize = 1;
@@ -316,7 +314,14 @@ class walletaddrs {
                         $r['abspath'] = $batchinfo['abspath'];
                         $r['xpub'] = $batchinfo['xpub'];
                         $r['status'] = $r['used'] ? 'used' : 'unused';
-                        if( $r['used'] || $include_unused ) {
+
+                        if( $include == 'used' && $r['used'] ) {
+                            $addrs[] = $r;
+                        }
+                        else if( $include == 'unused' && !$r['used'] ) {
+                            $addrs[] = $r;
+                        }
+                        else if ($include == 'both') {
                             $addrs[] = $r;
                         }
                     }

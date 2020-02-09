@@ -291,8 +291,9 @@ $ ./hd-wallet-addrs.php
                            (required for multisig)
     
     --gap-limit=<int>    bip32 unused addr gap limit. default=20
-    --include-unused     if present, unused addresses in gaps less than
-                         gap limit will be included
+    --include=<type>     include which addresses.  one of [used, unused, both]
+                         note that unused addresses are subject to --gap-limit
+    --include-unused     equivalent to --include=both
     
     --gen-only=<n>      will generate n receive addresses and n change addresses
                           but will not query the blockchain to determine if they

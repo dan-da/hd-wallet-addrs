@@ -66,6 +66,7 @@ function get_cli_params() {
                                   'list-cols',
                                   'oracle-raw:', 'oracle-json:',
                                   'include-unused',
+                                  'include:',
                                   'gen-only:', 'type:',
                                   'batch-size:',
                                   'version', 'help',
@@ -101,7 +102,11 @@ function process_cli_params( $params ) {
     $xpublist = get_xpub_list( $params, $empty_ok = true );
     
     $params['derivation'] = @$params['derivation'] ?: 'relative';
-    $params['include-unused'] = isset($params['include-unused']) ? true : false;
+    $params['include'] = isset($params['include-unused']) && !@$params['include'] ? 'both' : @$params['include'];
+    $params['include'] = @$params['include'] ?: 'used';   // used, unused, or both.
+    if( !in_array( $params['include'], ['used', 'unused', 'both'] )) {
+        throw new Exception('--include must be one of [used, unused, both]');
+    }
     
     $params['multisig'] = count($xpublist) > 1;
     
@@ -191,8 +196,9 @@ function print_help($stderr = true) {
                            (required for multisig)
     
     --gap-limit=<int>    bip32 unused addr gap limit. default=20
-    --include-unused     if present, unused addresses in gaps less than
-                         gap limit will be included
+    --include=<type>     include which addresses.  one of [used, unused, both]
+                         note that unused addresses are subject to --gap-limit
+    --include-unused     equivalent to --include=both
     
     --gen-only=<n>      will generate n receive addresses and n change addresses
                           but will not query the blockchain to determine if they
