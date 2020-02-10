@@ -525,7 +525,7 @@ in your project's composer.json:
 ```
 {
     "require": {
-         "dan-da/hd-wallet-addrs": "0.1.9"
+         "dan-da/hd-wallet-addrs": "0.2.0"
     }
 }
 ```
