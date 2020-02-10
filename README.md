@@ -520,19 +520,19 @@ as of 2015-12-30:
 Here's a quick example how you one can access the API directly without invoking
 the CLI program.
 
-in your project's compsoser.json:
+in your project's composer.json:
 
 ```
 {
     "require": {
-         "dan-da/strictmode-php": "0.1.9"
+         "dan-da/hd-wallet-addrs": "0.1.9"
     }
 }
 ```
 
 yourproject.php
 ```php
-require_once __DIR__  . '/../vendor/autoload.php';
+require_once 'vendor/autoload.php';
 
 // normally a single xpub is used.  multiple can be provided for multisig key generation.
 $xpub_list = ['xpub6BfKpqjTwvH21wJGWEfxLppb8sU7C6FJge2kWb9315oP4ZVqCXG29cdUtkyu7YQhHyfA5nt63nzcNZHYmqXYHDxYo8mm1Xq1dAC7YtodwUR'];
@@ -541,11 +541,12 @@ $params = walletaddrs::default_params();
 // modify params here if you need to.  see default_params() for keys.
 
 $wa = new walletaddrs($params);
-$data = $worker->discover_wallet_addrs( $xpub_list );
+$data = $wa->discover_wallet_addrs( $xpub_list );
 
-walletaddrsreport::print_results($worker->get_params(), $data);
-// or you could just use instead:
-// echo json_encode($data, JSON_PRETTY_PRINT);
+echo json_encode($data, JSON_PRETTY_PRINT);
+
+// or for fancier printing, you could use:
+// walletaddrsreport::print_results($wa->get_params(), $data);
 ```
 
 

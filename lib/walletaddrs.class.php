@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__  . '/../vendor/autoload.php';
+require_once 'vendor/autoload.php';
 
 // For HD-Wallet Key Derivation
 use \BitWasp\Bitcoin\Bitcoin;
@@ -45,32 +45,33 @@ class walletaddrs {
     
     static public function default_params() {
         $params = [
-            'xpub:'=> null,
-            'xpubfile:'=> null,
-            'outfile:'=> null,
-            'derivation:'=> 'relative',
-            'numsig:'=> null,
-            'format:'=> 'jsonpretty',
-            'cols:'=> 'all',
-            'gap-limit:'=> 20,
-            'logfile:'=> null,
-            'loglevel:'=> null,
-            'toshi:'=> 'https://bitcoin.toshi.io',
-            'blockchaindotinfo:'=> 'https://blockchain.info',
-            'btcd:'=> null,
-            'btcdotcom:'=> 'https://chain.api.btc.com',
-            'blockcypher:'=> 'https://api.blockcypher.com',
-            'insight:'=> 'https://insight.bitpay.com/api',
-            'esplora:'=> 'https://blockstream.info/api',
-            'api:'=> 'blockchaindotinfo',     // blockchaindotinfo, blockcypher, blockr, btcd, btcdotcom, esplora, insight, toshi
-            'oracle-raw:'=> null,
-            'oracle-json:'=> null,
-            'include:'=> 'used',              // used, unused, both
-            'gen-only:'=> false,              // only generate keys, do not query blockchain
-            'type:'=> 'both',                 // receive, change, both
+            'xpub'=> null,
+            'xpubfile'=> null,
+            'outfile'=> null,
+            'derivation'=> 'relative',
+            'numsig'=> null,
+            'format'=> 'jsonpretty',
+            'cols'=> self::default_cols(),
+            'gap-limit'=> 20,
+            'logfile'=> null,
+            'loglevel'=> null,
+            'toshi'=> 'https://bitcoin.toshi.io',
+            'blockchaindotinfo'=> 'https://blockchain.info',
+            'btcd'=> null,
+            'btcdotcom'=> 'https://chain.api.btc.com',
+            'blockcypher'=> 'https://api.blockcypher.com',
+            'insight'=> 'https://insight.bitpay.com/api',
+            'esplora'=> 'https://blockstream.info/api',
+            'api'=> 'blockchaindotinfo',     // blockchaindotinfo, blockcypher, blockr, btcd, btcdotcom, esplora, insight, toshi
+            'oracle-raw'=> null,
+            'oracle-json'=> null,
+            'include'=> 'used',              // used, unused, both
+            'gen-only'=> false,              // only generate keys, do not query blockchain
+            'type'=> 'both',                 // receive, change, both
             'batch-size' => 'auto',
             'multisig' => false,
         ];
+        return $params;
     }
     
     public function __construct( $params ) {
