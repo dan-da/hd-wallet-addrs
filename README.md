@@ -515,6 +515,40 @@ as of 2015-12-30:
 * each candidate address must be queried separately.
 
 
+# Embed in your own PHP project
+
+Here's a quick example how you one can access the API directly without invoking
+the CLI program.
+
+in your project's compsoser.json:
+
+```
+{
+    "require": {
+         "dan-da/strictmode-php": "0.1.9"
+    }
+}
+```
+
+yourproject.php
+```php
+require_once __DIR__  . '/../vendor/autoload.php';
+
+// normally a single xpub is used.  multiple can be provided for multisig key generation.
+$xpub_list = ['xpub6BfKpqjTwvH21wJGWEfxLppb8sU7C6FJge2kWb9315oP4ZVqCXG29cdUtkyu7YQhHyfA5nt63nzcNZHYmqXYHDxYo8mm1Xq1dAC7YtodwUR'];
+
+$params = walletaddrs::default_params();
+// modify params here if you need to.  see default_params() for keys.
+
+$wa = new walletaddrs($params);
+$data = $worker->discover_wallet_addrs( $xpub_list );
+
+walletaddrsreport::print_results($worker->get_params(), $data);
+// or you could just use instead:
+// echo json_encode($data, JSON_PRETTY_PRINT);
+```
+
+
 # Thanks
 
 A big thank-you to the author of bitwasp/bitcoin-php.  This library does the

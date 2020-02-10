@@ -43,13 +43,43 @@ class walletaddrs {
     const receive_idx = 0;
     const change_idx = 1;
     
+    static public function default_params() {
+        $params = [
+            'xpub:'=> null,
+            'xpubfile:'=> null,
+            'outfile:'=> null,
+            'derivation:'=> 'relative',
+            'numsig:'=> null,
+            'format:'=> 'jsonpretty',
+            'cols:'=> 'all',
+            'gap-limit:'=> 20,
+            'logfile:'=> null,
+            'loglevel:'=> null,
+            'toshi:'=> 'https://bitcoin.toshi.io',
+            'blockchaindotinfo:'=> 'https://blockchain.info',
+            'btcd:'=> null,
+            'btcdotcom:'=> 'https://chain.api.btc.com',
+            'blockcypher:'=> 'https://api.blockcypher.com',
+            'insight:'=> 'https://insight.bitpay.com/api',
+            'esplora:'=> 'https://blockstream.info/api',
+            'api:'=> 'blockchaindotinfo',     // blockchaindotinfo, blockcypher, blockr, btcd, btcdotcom, esplora, insight, toshi
+            'oracle-raw:'=> null,
+            'oracle-json:'=> null,
+            'include:'=> 'used',              // used, unused, both
+            'gen-only:'=> false,              // only generate keys, do not query blockchain
+            'type:'=> 'both',                 // receive, change, both
+            'batch-size' => 'auto',
+            'multisig' => false,
+        ];
+    }
+    
     public function __construct( $params ) {
         $this->params = $params;
     }
 
     /* Getter for params
      */
-    private function get_params() {
+    public function get_params() {
         return $this->params;
     }
 
@@ -70,8 +100,8 @@ class walletaddrs {
         usort($addrs, function($a, $b) {
             return strnatcasecmp($a['relpath'], $b['relpath']);
         });
-            
-        walletaddrsreport::print_results($this->get_params(), $addrs);
+        
+        return $addrs;
     }
 
 

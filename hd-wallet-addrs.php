@@ -32,7 +32,10 @@ function main( $argv ) {
         }
 
         $worker = new walletaddrs( $params );
-        return $worker->discover_wallet_addrs( get_xpub_list($params) );
+        $addrs = $worker->discover_wallet_addrs( get_xpub_list($params) );
+        walletaddrsreport::print_results($worker->get_params(), $addrs);
+        
+        return 0;
     }
     catch( Exception $e ) {
         mylogger()->log_exception( $e );
@@ -63,7 +66,6 @@ function get_cli_params() {
                                   'insight:',
                                   'esplora:',
                                   'api:', 
-                                  'list-cols',
                                   'oracle-raw:', 'oracle-json:',
                                   'include-unused',
                                   'include:',
@@ -137,9 +139,6 @@ function process_cli_params( $params ) {
     $params['batch-size'] = @$params['batch-size'] ?: 'auto';
     $params['cols'] = get_cols( $params );
     
-    $params['min-receive'] = is_numeric( @$params['min-receive'] ) ? $params['min-receive'] : 0;
-    $params['min-change'] = is_numeric( @$params['min-change'] ) ? @$params['min-change'] : 0;    
-
     $params['insight'] = @$params['insight'] ?: 'https://insight.bitpay.com/api';
     $params['esplora'] = @$params['esplora'] ?: 'https://blockstream.info/api';
     $params['btcd'] = @$params['btcd'];

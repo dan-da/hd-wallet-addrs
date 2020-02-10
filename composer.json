@@ -4,7 +4,13 @@
     "require": {
         "bitwasp/bitcoin": "0.0.35",
         "ext-json": "*",
-        "php": ">=5.5"
+        "php": ">=7.0"
+    },
+
+    "autoload": {
+        "classmap": [
+            "lib/walletaddrs.class.php"
+        ]
     },
 
     "require-dev": {
