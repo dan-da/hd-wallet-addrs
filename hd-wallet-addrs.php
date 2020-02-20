@@ -7,6 +7,9 @@
  * Code in this file is related to interacting with the shell.
  */
 
+ // Add our DIR to include_path, so vendor will load if we are invoked from another dir.
+ set_include_path(get_include_path() . ':' . __DIR__);
+
 // Let's be strict about things.
 require_once __DIR__ . '/lib/strict_mode.funcs.php';
 
