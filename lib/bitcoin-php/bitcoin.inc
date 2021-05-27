@@ -785,7 +785,7 @@ class BitcoinClient extends json_rpc_client {
    * @throws BitcoinClientException
    * @since 0.3.18
    */
-  public function move($fromaccount = "", $toaccount, $amount, $minconf = 1, $comment = NULL) {
+  public function move($fromaccount, $toaccount, $amount, $minconf = 1, $comment = NULL) {
     if (!$fromaccount)
       $fromaccount = "";
     if (!$toaccount || empty($toaccount) || !$amount || !is_numeric($amount) || $amount <= 0)
