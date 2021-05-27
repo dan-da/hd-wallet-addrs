@@ -459,7 +459,7 @@ class walletaddrsreport {
      */
     static public function print_results( $params, $results ) {
         $format = $params['format'];
-        $outfile = @$params['outfile'];
+        $outfile = !empty($params['outfile']) ? $params['outfile'] : '';
         
         $summary = self::result_count_by_type( $results );
         $summary['gen-only'] = $params['gen-only'];

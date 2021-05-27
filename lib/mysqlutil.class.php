@@ -266,8 +266,10 @@ END;
             $idx = 0;
             foreach( $row as $val ) {
                 $len = strlen( $val );
-                if( $len > @$col_widths[$idx] ) {
-                    $col_widths[$idx] = $len;
+                if (!empty($col_widths[$idx])) {
+                    if( $len > $col_widths[$idx] ) {
+                        $col_widths[$idx] = $len;
+                    }
                 }
                 $idx ++;
             }
@@ -284,7 +286,8 @@ END;
             $idx = 0;
             foreach( $row as $val ) {
                 $pad_type = is_numeric( $val ) ? STR_PAD_LEFT : STR_PAD_RIGHT;
-                $buf .= ' ' . str_pad( $val, $col_widths[$idx], ' ', $pad_type ) . " |";
+                $columnWidth = !empty($col_widths[$idx]) ? $col_widths[$idx] : 0;
+                $buf .= ' ' . str_pad( $val, $columnWidth, ' ', $pad_type ) . " |";
                 $idx ++;
             }
             return $buf . "\n";

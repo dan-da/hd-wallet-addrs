@@ -34,6 +34,8 @@ class mylogger {
     
     public $admin_email;
     public $admin_email_encrypt;
+
+    private $_last_time;
     
     static protected $level_map = array( self::debug => 'debug',
                                          self::info => 'info',
