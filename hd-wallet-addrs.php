@@ -96,19 +96,19 @@ function process_cli_params( $params ) {
     }
     
     
-    if( @$params['logfile'] ) {
+    if( !empty($params['logfile']) ) {
         mylogger()->set_log_file( $params['logfile'] );
         mylogger()->echo_log = false;
     }
 
-    $loglevel = @$params['loglevel'] ?: 'info';
+    $loglevel = !empty($params['loglevel']) ? $params['loglevel'] : 'info';
     mylogger()->set_log_level_by_name( $loglevel );
 
     $xpublist = get_xpub_list( $params, $empty_ok = true );
     
-    $params['derivation'] = @$params['derivation'] ?: 'relative';
-    $params['include'] = isset($params['include-unused']) && !@$params['include'] ? 'both' : @$params['include'];
-    $params['include'] = @$params['include'] ?: 'used';   // used, unused, or both.
+    $params['derivation'] = !empty($params['derivation']) ? $params['derivation'] : 'relative';
+    $params['include'] = isset($params['include-unused']) && empty($params['include']) ? 'both' : $params['include'];
+    $params['include'] = !empty($params['include']) ? $params['include'] : 'used';   // used, unused, or both.
     if( !in_array( $params['include'], ['used', 'unused', 'both'] )) {
         throw new Exception('--include must be one of [used, unused, both]');
     }
@@ -122,16 +122,16 @@ function process_cli_params( $params ) {
         $params['numsig'] = @$params['numsig'] ?: (count($xpublist)==1 ? 1 : null);
     }
     
-    $params['gen-only'] = is_numeric( @$params['gen-only'] ) ? $params['gen-only'] : null;
+    $params['gen-only'] = is_numeric( empty($params['gen-only']) ? '' : $params['gen-only']  ) ? $params['gen-only'] : null;
     
     $types = array( 'receive', 'change', 'both');
-    $params['type'] = in_array( @$params['type'], $types ) ? $params['type'] : 'both';
+    $params['type'] = in_array( empty($params['type']) ? [] : $params['type'] , $types ) ? $params['type'] : 'both';
     
     if( count($xpublist) > 1 && !@$params['numsig'] ) {
         throw new Exception( "multisig requires --numsig" );
     }
 
-    $params['api'] = @$params['api'] ?: 'blockchaindotinfo';
+    $params['api'] = !empty($params['api']) ? $params['api'] : 'blockchaindotinfo';
 
     // no default url for btcd    
     if( $params['api'] == 'btcd' && !@$params['btcd'] ) {
@@ -139,22 +139,22 @@ function process_cli_params( $params ) {
     }
     
     $params['gap-limit'] = @$params['gap-limit'] ?: 20;
-    $params['batch-size'] = @$params['batch-size'] ?: 'auto';
+    $params['batch-size'] = !empty($params['batch-size']) ? $params['batch-size'] : 'auto';
     $params['cols'] = get_cols( $params );
     
-    $params['insight'] = @$params['insight'] ?: 'https://insight.bitpay.com/api';
-    $params['esplora'] = @$params['esplora'] ?: 'https://blockstream.info/api';
-    $params['btcd'] = @$params['btcd'];
-    $params['blockchaindotinfo'] = @@$params['blockchaindotinfo'] ?: 'https://blockchain.info';
-    $params['btcdotcom'] = @@$params['btcdotcom'] ?: 'https://chain.api.btc.com';
-    $params['blockcypher'] = @@$params['blockcypher'] ?: 'https://api.blockcypher.com';
-    $params['toshi'] = @$params['toshi'] ?: 'https://bitcoin.toshi.io';
+    $params['insight'] = !empty($params['insight']) ? $params['insight'] : 'https://insight.bitpay.com/api';
+    $params['esplora'] = !empty($params['esplora']) ? $params['esplora'] : 'https://blockstream.info/api';
+    $params['btcd'] = !empty($params['btcd']) ? $params['btcd'] : '';
+    $params['blockchaindotinfo'] = !empty($params['blockchaindotinfo']) ? $params['blockchaindotinfo'] : 'https://blockchain.info';
+    $params['btcdotcom'] = !empty($params['btcdotcom']) ? $params['btcdotcom'] : 'https://chain.api.btc.com';
+    $params['blockcypher'] = !empty($params['blockcypher']) ? $params['blockcypher'] : 'https://api.blockcypher.com';
+    $params['toshi'] = !empty($params['toshi']) ? $params['toshi'] : 'https://bitcoin.toshi.io';
 
-    $params['format'] = @$params['format'] ?: 'txt';
-    $params['cols'] = @$params['cols'] ?: 'all';
+    $params['format'] = !empty($params['format']) ? $params['format'] : 'txt';
+    $params['cols'] = !empty($params['cols']) ? $params['cols'] : 'all';
 
-    $params['oracle-raw'] = @$params['oracle-raw'] ?: null;
-    $params['oracle-json'] = @$params['oracle-json'] ?: null;
+    $params['oracle-raw'] = !empty($params['oracle-raw']) ? $params['oracle-raw'] : null;
+    $params['oracle-json'] = !empty($params['oracle-json']) ? $params['oracle-json'] : null;
     
     return [$params, $success];
 }
@@ -291,7 +291,7 @@ function get_xpub_list($params, $empty_ok=false) {
     if( @$params['xpub'] ) {
         $list = explode( ',', strip_whitespace( $params['xpub'] ) );
     }
-    if( @$params['xpubfile'] ) {
+    if( !empty($params['xpubfile']) ) {
         $csv = implode( ',', file( $params['xpubfile'] ) );
         $list = explode( ',', strip_whitespace( $csv ) );
     }
