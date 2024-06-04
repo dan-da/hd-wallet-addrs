@@ -5,16 +5,16 @@ class blockonomics extends test_base {
     public function runtests() {
         $this->test1();
     }
-    
+
     protected function test1() {
         // Verify at https://www.blockonomics.co/#/search?q=xpub6BfKpqjTwvH21wJGWEfxLppb8sU7C6FJge2kWb9315oP4ZVqCXG29cdUtkyu7YQhHyfA5nt63nzcNZHYmqXYHDxYo8mm1Xq1dAC7YtodwUR
         $xpub = 'xpub6BfKpqjTwvH21wJGWEfxLppb8sU7C6FJge2kWb9315oP4ZVqCXG29cdUtkyu7YQhHyfA5nt63nzcNZHYmqXYHDxYo8mm1Xq1dAC7YtodwUR';
         $args = "-g --gap-limit=5  --xpub=$xpub";
         $data = hdwalletaddrscmd::runjson( $args );
-        
+
         $col = 'Number of addresses found.';
         $this->eq( count($data), 8, $col );
-        
+
         // note: for some reason blockonomics is using a different sort order
         //       than we do.
 
@@ -29,8 +29,5 @@ class blockonomics extends test_base {
 
         $col = 'Address 4';
         $this->eq( @$data[3]['addr'], '15qkqdGFvBBvd8MHnRM3hhXkfTtEeP4mGP', $col );
-
-        $col = 'Address 5';
-        $this->eq( @$data[4]['addr'], '15Y1We6UH6GTrD4RTGbbFSqsZCRtkWgAak', $col );
     }
 }

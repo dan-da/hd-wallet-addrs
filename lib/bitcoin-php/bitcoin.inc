@@ -14,8 +14,8 @@
  */
 
 require_once(dirname(__FILE__) . "/includes/json_rpc_client.class.php");
- 
- 
+
+
 define("BITCOIN_ADDRESS_VERSION", "00");// this is a hex byte
 /**
  * Bitcoin utility functions class
@@ -246,13 +246,13 @@ class BitcoinClientException extends ErrorException {
 }
 
 class BitcoinServerException extends Exception {
-  
+
   protected $currency_symbol;
-  
+
   function __construct( Exception $e, $currency_symbol ) {
     parent::__construct( $e->getMessage(), $e->getCode() );
   }
-  
+
   public function get_currency_symbol( ) {
     return $this->currency_symbol;
   }
@@ -269,7 +269,7 @@ class BitcoinServerException extends Exception {
  * 	http://www.gogulski.com/ http://www.nostate.com/
  */
 class BitcoinClient extends json_rpc_client {
-  
+
   protected $currency_symbol;
 
   /**
@@ -647,12 +647,12 @@ class BitcoinClient extends json_rpc_client {
   /**
    * Returns up to [count] most recent transactions skipping the first [from]
    * transactions for account [account]. If [account] not provided will return
-   * recent transaction from all accounts. 
+   * recent transaction from all accounts.
    *
    * @param string  $account  account to check transactions for, if any.
    * @param integer $count    maximum number of transactions
    * @param integer $from     number of transactions to skip.
-   * 
+   *
    * @return array An array of arrays. The elements are:
    * 	"label" => the label of the receiving address
    * 	"amount" => total amount received by the address
@@ -668,7 +668,7 @@ class BitcoinClient extends json_rpc_client {
     }
     return $this->query("listtransactions", $account, $count, $from);
   }
-  
+
 
   /**
    *  Get all transactions in blocks since block [blockhash], or all
@@ -680,7 +680,7 @@ class BitcoinClient extends json_rpc_client {
     return $this->query("listsinceblock", $blockhash, $target_confirmations);
   }
 
-  
+
   /**
    * Send amount from the server's available balance.
    *
@@ -710,18 +710,18 @@ class BitcoinClient extends json_rpc_client {
   }
 
   public function sendmany($account, $address_amount_map, $minconf=1, $comment = null) {
-    
+
     if (!$address_amount_map || @empty($address_amount_map)) {
       throw new BitcoinClientException("sendtoaddress requires destination address(es)");
     }
-    
+
     if (!$comment) {
       return $this->query("sendmany", $account, $address_amount_map, $minconf);
     }
     return $this->query("sendmany", $account, $address_amount_map, $minconf, $comment );
   }
-  
-  
+
+
   /**
    * Stop the Bitcoin server.
    *
@@ -785,7 +785,7 @@ class BitcoinClient extends json_rpc_client {
    * @throws BitcoinClientException
    * @since 0.3.18
    */
-  public function move($fromaccount = "", $toaccount, $amount, $minconf = 1, $comment = NULL) {
+  public function move($fromaccount, $toaccount, $amount, $minconf = 1, $comment = NULL) {
     if (!$fromaccount)
       $fromaccount = "";
     if (!$toaccount || empty($toaccount) || !$amount || !is_numeric($amount) || $amount <= 0)
@@ -898,7 +898,7 @@ class BitcoinClient extends json_rpc_client {
     }
     return $this->query("createrawtransaction", $inputs, $outputs );
   }
-  
+
   public function signrawtransaction($rawtx) {
     if( !$rawtx ) {
       throw new Exception( "No raw transaction data" );
@@ -916,11 +916,11 @@ class BitcoinClient extends json_rpc_client {
   public function listunspent( $minconf=1, $maxconf=9999999, $addrs = array() ) {
     return $this->query("listunspent", $minconf, $maxconf, $addrs );
   }
-  
+
   public function is_testnet() {
     $info = $this->getinfo();
     return @$info->testnet == true;
   }
 
-  
+
 }

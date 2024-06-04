@@ -1,10 +1,13 @@
 {
     "name": "dan-da/hd-wallet-addrs",
+    "description": "A command-line tool that finds Bitcoin wallet addresses that have received funds.",
+    "license": "GPL-3.0-only",
 
     "require": {
-        "bitwasp/bitcoin": "0.0.35",
+        "protonlabs/bitcoin": "^1.0.10",
+        "dan-da/strictmode-php": "^1.0.2",
         "ext-json": "*",
-        "php": ">=7.0"
+        "php": ">=8.0"
     },
 
     "autoload": {

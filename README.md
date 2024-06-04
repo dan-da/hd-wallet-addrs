@@ -34,7 +34,7 @@ See also: [hd-wallet-derive](https://github.com/dan-da/hd-wallet-derive) -- a to
 ```
 $ ./hd-wallet-addrs.php -g --xpub=xpub6BfKpqjTwvH21wJGWEfxLppb8sU7C6FJge2kWb9315oP4ZVqCXG29cdUtkyu7YQhHyfA5nt63nzcNZHYmqXYHDxYo8mm1Xq1dAC7YtodwUR --logfile=/tmp/log.txt
 
- --- Wallet Discovery Report --- 
+ --- Wallet Discovery Report ---
 
 Found 3 Receive addresses and 2 Change addresses.
   Receive --  Used: 3   Unused: 0
@@ -58,7 +58,7 @@ Tip: The abspath column is empty when --derivation=relative, which is the defaul
 ```
 $ ./hd-wallet-addrs.php -g --xpub=xpub6BfKpqjTwvH21wJGWEfxLppb8sU7C6FJge2kWb9315oP4ZVqCXG29cdUtkyu7YQhHyfA5nt63nzcNZHYmqXYHDxYo8mm1Xq1dAC7YtodwUR --cols=type,abspath,relpath,addr --derivation=bip44 --logfile=/tmp/log.txt
 
- --- Wallet Discovery Report --- 
+ --- Wallet Discovery Report ---
 
 Found 3 Receive addresses and 2 Change addresses.
   Receive --  Used: 3   Unused: 0
@@ -80,7 +80,7 @@ Or get a list for easy copy/paste.
 ```
 $ ./hd-wallet-addrs.php -g --xpub=xpub6BfKpqjTwvH21wJGWEfxLppb8sU7C6FJge2kWb9315oP4ZVqCXG29cdUtkyu7YQhHyfA5nt63nzcNZHYmqXYHDxYo8mm1Xq1dAC7YtodwUR --format=addrlist --logfile=/tmp/log.txt
 
- --- Wallet Discovery Report --- 
+ --- Wallet Discovery Report ---
 
 Found 3 Receive addresses and 2 Change addresses.
   Receive --  Used: 3   Unused: 0
@@ -135,7 +135,7 @@ gap limit.  The gap limit default is 20, but we use 2 here for brevity.
 ```
 $ ./hd-wallet-addrs.php -g --numsig=2 --gap-limit=2  --xpub=xpub6CZte6DfeMoVwxv3ShiMwQjET47nRENqrkZaSXTcP7Yaja6sxyRbiyqPD7kfy4W2dTTuTdV4jHMmSe1k1qteTMN7qDLndt1RfQ8RLM3pjzb,xpub6DUGj5hRwp7t3DoH554Ce7p3KLepccYfG5BVbvyPSArTepacc3aPRDTMz3GSdoX1HgVYKBSaR6fFDm1daEtSQFBSNTq4X93pd8dBFyPW2gz,xpub6DRFPDtHueJ5sfqzcLSyoKL6TQZMofvjpLzsVXsWqjgYuAtUtdU8YjWFvpa2xegWLFeLQ38KLJzWdKQ3CsAQQLoMYnBsQy3FCeTDuxgcsfK --include-unused --logfile=/tmp/out.txt
 
- --- Wallet Discovery Report --- 
+ --- Wallet Discovery Report ---
 
 Found 2 Receive addresses and 2 Change addresses.
   Receive --  Used: 0   Unused: 2
@@ -163,7 +163,7 @@ Note the use of --derivation=copaylegacy
 ```
 $ ./hd-wallet-addrs.php -g --derivation=copaylegacy --gap-limit=2  --xpub=xpub697odnriKgTgWE4my6au8nd8haUfAMzLGFpDemAkRbCMgGVxANuj9DffNLgDjPA1dnxzi8oFmM79ZPgKVfCV7Saj8sQUL7tJfeZDuyQNGDm --include-unused --logfile=/tmp/out.txt
 
- --- Wallet Discovery Report --- 
+ --- Wallet Discovery Report ---
 
 Found 2 Receive addresses and 2 Change addresses.
   Receive --  Used: 0   Unused: 2
@@ -198,7 +198,7 @@ Again we must use --derivation=copaylegacy
 ```
 $ ./hd-wallet-addrs.php --derivation=copaylegacy -g --gap-limit=2  --xpub=xpub68bjYyPhqAwK4T8WtXuGvruSQoJu1vdLD7DYc591MkFCR7wD9gyzteFYmzRyytWJ2SzTqZNTgggvPEyqEy9oArjLF7xhte5js1Lp1EPipwJ,xpub68ufoGjY41tQqP4LpeyYornuNxm8DNy2Rn7KAPUTAwFouj821eqcVpWw1jonrm2Xg5jnnSrd1QPQzGve3f66ZLf6Ni9VY6aN3AjYa4e7XTE --numsig=2 --include-unused --logfile=/tmp/out.txt
 
- --- Wallet Discovery Report --- 
+ --- Wallet Discovery Report ---
 
 Found 2 Receive addresses and 2 Change addresses.
   Receive --  Used: 0   Unused: 2
@@ -248,7 +248,7 @@ blockchain providers and send individual addresses to each.  In this way, no
 single provider will have access to all the queried wallet addresses.
 
 Querying for individual addresses is slow.  The --batch-size flag may be used
-to increase the number of addresses sent to each provider.  
+to increase the number of addresses sent to each provider.
 
 
 # Use at your own risk.
@@ -274,13 +274,13 @@ transactions only, or both types.
 $ ./hd-wallet-addrs.php
 
    hd-wallet-addrs.php
-   
+
    This script discovers bitcoin HD wallet addresses that have been used.
 
    Options:
 
     -g                   go!  ( required )
-    
+
     --xpub=<csv>         comma separated list of xpub keys
     --xpubfile=<path>    file containing xpub keys, one per line.
                            note: multiple keys implies multisig m of n.
@@ -289,27 +289,27 @@ $ ./hd-wallet-addrs.php
                            default=relative
     --numsig=<int>       number of required signers for m-of-n multisig wallet.
                            (required for multisig)
-    
+
     --gap-limit=<int>    bip32 unused addr gap limit. default=20
     --include=<type>     include which addresses.  one of [used, unused, both]
                          note that unused addresses are subject to --gap-limit
     --include-unused     equivalent to --include=both
-    
+
     --gen-only=<n>      will generate n receive addresses and n change addresses
                           but will not query the blockchain to determine if they
                           have been used.
-                          
+
     --type=<type>       receive|change|both.  default=both
-    
+
     --api=<api>          toshi|insight|blockchaindotinfo|btcd|roundrobin
                            default = blockchaindotinfo  (fastest)
                            roundrobin will use a different API for each batch
                             to improve privacy.  It also sets --batch-size to
                             1 if set to auto.
-                            
+
     --batch-size=<n>    integer|auto   default=auto.
                           The number of addresses to lookup in each batch.
-    
+
     --cols=<cols>        a csv list of columns, or "all"
                          all:
                           (addr,type,total_received,total_sent,balance,relpath,abspath,xpub)
@@ -318,23 +318,23 @@ $ ./hd-wallet-addrs.php
 
     --outfile=<path>     specify output file path.
     --format=<format>    txt|csv|json|jsonpretty|html|addrlist|all   default=txt
-    
+
                          if all is specified then a file will be created
                          for each format with appropriate extension.
                          only works when outfile is specified.
-                         
+
     --toshi=<url>       toshi server. defaults to https://bitcoin.toshi.io
     --insight=<url>     insight server. defaults to https://insight.bitpay.com/api
-    
+
     --blockchaindotinfo=<url>
                         blockchain.info server.  defaults to https://blockchain.info
-    
+
     --btcd=<url>        btcd rpc server.  specify as http://user:pass@host:port.  https ok also
                           btcd does not return balance or total sent/received.
-    
+
     --oracle-raw=<p>    path to save raw server response, optional.
     --oracle-json=<p>   path to save formatted server response, optional.
-    
+
     --logfile=<file>    path to logfile. if not present logs to stdout.
     --loglevel=<level>  debug,info,specialinfo,warning,exception,fatalerror
                           default = info
@@ -343,17 +343,16 @@ $ ./hd-wallet-addrs.php
 
 # Installation and Running.
 
-PHP's gmp and mcrypt extensions are required.  Here's how to install on ubuntu.
+PHP's gmp extension is required.  Here's how to install on ubuntu.
 ```
- sudo apt-get install php5-gmp php5-mcrypt
+ sudo apt-get install php-cli php-gmp composer
 ```
 
 Basics
 ```
  git clone https://github.com/dan-da/hd-wallet-addrs
  cd hd-wallet-addrs
- php -r "readfile('https://getcomposer.org/installer');" | php
- php composer.phar install
+ composer install
 ```
 
 Try an example
@@ -372,21 +371,10 @@ Run Test cases
  ./test_runner.php
 ```
 
-It is really slow to generate keys in PHP.  For a huge speedup, you can install the
-secp256k1 extension from:
+It is really slow to generate keys in PHP.  For a huge speedup, you can install
+the secp256k1 extension from:
 
 <a href="https://github.com/Bit-Wasp/secp256k1-php">https://github.com/Bit-Wasp/secp256k1-php</a>
-
-Versions of secp256k1-php after v0.0.7 require PHP7, so if you are using PHP5,
-the install instructions on that page must be modified as follows:
-
-```
-$ cd secp256k1-php/secp256k1
-$ git checkout v0.0.7
-$ phpize && ./configure --with-secp256k1 && make && sudo make install
-```
-
-Note:  on some installations you may need to specify phpize5 instead of phpize.
 
 
 # Blockchain API provider notes.
@@ -400,8 +388,30 @@ because it presently has the fastest API, and it is the default.
 For best privacy, one should query an oracle that is running locally.
 Esplora, Insight, toshi, and btcd can be operated this way.
 
+# [blockchain.info](https://www.blockchain.com/api/blockchain_api)
+
+as of 2024-06-03: tested WORKING.
+
+as of 2015-12-30:
+
+- supports multi address lookup in a single call.
+- max addrs per call: unknown.
+- returns extra un-needed info such as last 50 tx.
+- returns addresses in different order than requested.
+
+# [esplora](https://github.com/Blockstream/esplora) (by blockstream.info)
+
+as of 2024-6-03: tested WORKING.
+
+as of 2019-08-06:
+
+- does NOT support multi address lookup in a single call. [feature requested](https://github.com/Blockstream/esplora/issues/27).
+- open source, can be run locally.
+
 
 ## [btc.com](https://btc.com/api-doc)
+
+as of 2024-6-03: tested NOT WORKING.
 
 as of 2019-08-06
 
@@ -427,16 +437,9 @@ as of 2015-12-30:
 * some 3rd party party patches or external solutions exist for creating an address index.
 * not supported by hd-wallet-addrs (sadly).
 
-## [blockchain.info](https://www.blockchain.com/api/blockchain_api)
-
-as of 2015-12-30:
-
-* supports multi address lookup in a single call.
-* max addrs per call: unknown.
-* returns extra un-needed info such as last 50 tx.
-* returns addresses in different order than requested.
-
 ## [blockcypher.com](https://www.blockcypher.com/dev/bitcoin/)
+
+as of 2024-6-03: tested NOT WORKING.
 
 as of 2018-07-23:
 
@@ -448,14 +451,9 @@ can only be achieved with an API key, and the limit for free
 usage is effectively 3.
 * See https://github.com/blockcypher/explorer/issues/245
 
-## [esplora](https://github.com/Blockstream/esplora) (by blockstream.info)
-
-as of 2019-08-06:
-
-* does NOT support multi address lookup in a single call.  [feature requested](https://github.com/Blockstream/esplora/issues/27).
-* open source, can be run locally.
-
 ## [Insight](https://github.com/bitpay/insight)
+
+as of 2024-06-03: tested NOT WORKING.
 
 as of 2019-08-06
 
